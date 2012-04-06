@@ -43,6 +43,7 @@ public class SocketServer {
 	int port;
 	NetworkHandler handler;
 	ServerSocket server;
+	Socket clientSocket;
 	
 	public SocketServer(String hostname, int port) {
 		this.hostname = hostname;
@@ -51,6 +52,8 @@ public class SocketServer {
 	
 	public void connect() throws IOException {
 		// implement me
+		server = new ServerSocket();
+		clientSocket = server.accept();
 	}
 	
 	/**
@@ -67,5 +70,6 @@ public class SocketServer {
 	 */
 	public void addHandler(NetworkHandler handler) {
 		// implement me
+		this.handler = handler;
 	}
 }
