@@ -31,6 +31,8 @@ package edu.berkeley.cs162;
 
 import java.io.*;
 import java.util.zip.DataFormatException;
+import java.io.FilterInputStream;
+import java.io.InputStream;
 
 
 /**
