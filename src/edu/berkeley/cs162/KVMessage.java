@@ -29,8 +29,8 @@
  */
 package edu.berkeley.cs162;
 
-import java.io.FilterInputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.util.zip.DataFormatException;
 
 
 /**
@@ -42,11 +42,54 @@ public class KVMessage {
 	private String msgType = null;
 	private String key = null;
 	private String value = null;
+	private boolean status = false;
+	private String message = null;
 
 	public KVMessage(String msgType, String key, String value) {
 		this.msgType = msgType;
 		this.key = key;
 		this.value = value;
+	}
+	
+	// This constructor will handle the Serializable -> String marshalling,
+	// and should be the one actually used by KVClient.
+	// Will throw DataFormatException if either the key or value are too long.
+	public KVMessage(String msgType, Serializable key, Serializable value, boolean status, String message) throws DataFormatException{
+		this.msgType = msgType;
+		this.key = marshall(key);
+		this.value = marshall(value);
+		this.status = status;
+		this.message = message;
+		
+		if (this.key.length() > 256)
+			throw new DataFormatException("Over sized key");
+		if (this.value.length() > 128000) // if value longer than 128KiB
+			throw new DataFormatException("Over sized value");
+	}
+	
+	// Converts a Serializable Object into a String.
+	public static String marshall(Serializable o) {
+		if (o == null) return "";
+		
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		ObjectOutputStream objectStream;
+		try {
+			objectStream = new ObjectOutputStream(byteStream);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
+		
+		try {
+			objectStream.writeObject(o);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
+		
+		return new String(byteStream.toByteArray());
 	}
 
 	
