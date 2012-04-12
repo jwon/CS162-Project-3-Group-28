@@ -47,9 +47,11 @@ public class PingPong {
 		
 		public void run(){
 			try{
-				ObjectOutputStream oos = new ObjectOutputStream(s1.getOutputStream());
-				oos.writeObject("pong");
-				oos.close();
+				OutputStream os = s1.getOutputStream();
+				DataOutputStream osout = new DataOutputStream(os);
+				osout.writeUTF("pong");
+				osout.close();
+				os.close();
 				s1.close();
 			} catch (IOException e){
 				e.printStackTrace();
