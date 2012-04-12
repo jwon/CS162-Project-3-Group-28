@@ -30,10 +30,17 @@
  */
 package edu.berkeley.cs162;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
-
+import java.net.*;
 /**
  * This class is used to communicate with (appropriately marshalling and unmarshalling) 
  * objects implementing the {@link KeyValueInterface}.

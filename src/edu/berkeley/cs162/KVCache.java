@@ -29,12 +29,20 @@ package edu.berkeley.cs162;
 
 import java.io.Serializable;
 
+import java.net.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.concurrent.locks.Lock;
 /**
  * An LRU cache which has a fixed maximum number of elements (cacheSize).
  * If the cache is full and another entry is added, the LRU (least recently used) entry is dropped.
  */
 public class KVCache<K extends Serializable, V extends Serializable> implements KeyValueInterface<K, V>{
 	private int cacheSize;
+	private int maxSize;
+	private LinkedHashMap<K,V> cache;
+	private LinkedList<K> order;
+	Lock accessLock;
 
 	/**
 	 * Creates a new LRU cache.
@@ -42,6 +50,9 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	 */
 	public KVCache (int cacheSize) {
 		// implement me
+		cache = new LinkedHashMap<K, V>(cacheSize);
+		order = new LinkedList<K>();
+		maxSize = cacheSize;
 	}
 
 	/**
@@ -52,7 +63,17 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	 */
 	public V get (K key) {
 		// implement me
-		return null;
+		V value;
+		synchronized(this){
+			value = cache.get(key);
+			if (value!=null){
+				cache.remove(key);
+				order.remove(key);
+				cache.put(key, value);
+				order.add(key);
+			}
+		}
+		return value;
 	}
 
 	/**
@@ -66,6 +87,16 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	 */
 	public boolean put (K key, V value) {
 		// implement me
+		synchronized(this){
+			cache.remove(key);
+			order.remove(key);
+			cache.put(key, value);
+			order.add(key);
+			while(cache.size()>maxSize){
+				K toRemove = order.remove();
+				cache.remove(toRemove);
+			}
+		}
 		return false;
 	}
 
@@ -75,5 +106,7 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	 */
 	public void del (K key) {
 		// implement me
+		order.remove(key);
+		cache.remove(key);
 	}
 } // end class LRUCache

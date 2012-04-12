@@ -52,7 +52,7 @@ public class SocketServer {
 	
 	public void connect() throws IOException {
 		// implement me
-		server = new ServerSocket();
+		server = new ServerSocket(this.port);
 		clientSocket = server.accept();
 	}
 	
