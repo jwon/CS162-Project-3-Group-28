@@ -34,7 +34,7 @@ public class ThreadPool {
 	 * Set of threads in the threadpool
 	 */
 	protected Thread threads[] = null;
-	protected LinkedList<Runnable> queueOfTasks;
+	protected LinkedList<Runnable> queueOfTasks = new LinkedList<Runnable>();
 
 	/**
 	 * Initialize the number of threads required in the threadpool. 
@@ -45,6 +45,9 @@ public class ThreadPool {
 	{
 		// implement me
 		threads = new Threads[size];
+		for(int i = 0; i < size; i++){
+			threads[i] = new WorkerThread(this);
+		}
 	}
 
 	/**
@@ -64,7 +67,8 @@ public class ThreadPool {
  * The worker threads that make up the thread pool.
  */
 class WorkerThread extends Thread {
-	protected boolean isFree;
+	protected ThreadPool myThreadPool;
+	protected Runnable task;
 
 	/**
 	 * @param o the thread pool 
@@ -72,13 +76,8 @@ class WorkerThread extends Thread {
 	WorkerThread(ThreadPool o)
 	{
 		// implement me
-		isFree = true;
-
-		for (int i = 0; i < o.threads.length(); i++){
-			if(o.threads[i] == null){
-				o.threads[i] = this;
-			}
-		}
+		this.threadpool = o;
+		this.task = null;
 	}
 
 	/**
@@ -87,6 +86,22 @@ class WorkerThread extends Thread {
 	public void run()
 	{
 		// implement me
-		(queueOfTasks.remove()).run();
+		Runnable first;
+
+		if(this.task == null){
+			synchronized (this){
+				first = myThreadPool.queueOfTasks.pollFirst();
+			}
+			if(first == null){ //if queue is empty
+				this.yield();
+			}
+			else{
+				this.task = first;
+			}
+		}
+
+		this.task.run();
+		this.task = null;
+		this.run();
 	}
 }
