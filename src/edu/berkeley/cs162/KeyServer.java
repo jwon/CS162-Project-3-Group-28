@@ -1,4 +1,4 @@
-/**
+ /**
  * Slave Server component of a KeyValue store
  * 
  * @author Prashanth Mohan (http://www.cs.berkeley.edu/~prmohan)
@@ -49,12 +49,30 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	 * @param cacheSize number of entries in the data Cache.
 	 */
 	public KeyServer(int cacheSize) {
-		// implement me
+	    dataCache = dataCache(cacheSize);
+	    dataStore = new KVStore();
 	}
 	
 	public boolean put(K key, V value) throws KVException {
-		// implement me
+	    string keyString = KVMessage.marshall(key);
+	    string valueString = KVMessage.marshall(key);
+	    byte[] size = (keyString).getBytes;
+	    if (size.length() > 256)
+		throw new KVException(KVMessage("Over sized key", keyString, valueString));
+	    if (size == 0)
+		throw new KVException(KVMessage("Empty key", keyString, valueString));
+	    size = (valueString).getBytes;
+	    if (size.length() > 131072)
+		throw new KVException(KVMessage("Over sized value", keyString, valueString));
+	    if (size == 0)
+		throw new KVException(KVMessage("Empty value", keyString, valueString));
+	    boolean store = dataStore.put(key,value);
+	    boolean cache = dataCache.put(key,value);
+	    if (store == true)
+		return true;
+	    if (store == false && cache == false)
 		return false;
+	    else throw new KVException(KVMessage("Unknown Error: cache and store not in sync"));
 	}
 	
 	public V get (K key) throws KVException {
