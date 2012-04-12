@@ -60,111 +60,131 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	
 	@Override
 	public boolean put(K key, V value) throws KVException {
-		byte[] keyByteArray;
-		ByteArrayOutputStream byteStream = new ByteArrayOutputStream(keyByteArray);
-		ObjectOutputStream marshaller = new ObjectOutputStream(byteStream);
-
-		//TODO: write key to marshaller
-		//TODO: check that byte array isn't longer than 256 bytes
-
-		String mKey = new String(keyByteArray);
-		//is this right? Or am I supposed to use javax?
-		
-
-		//TODO: Same process as above but for value, into a String mValue
-		//TODO: close byteStream and marshaller
-
-		//TODO: try/catch network errors?
-
-		KVMessage reqMessage = new KVMessage("putreq", mKey, mValue);
-
-		//TODO: write reqMessage.toXML() to outStream but convert to byte[] first
-
-		try{
-			KVMessage respMessage = new KVMessage(inStream);
-		} catch (KVException e){
-			System.out.println("XML Error: Received unparsable message");
-			exit();
+		String keyAsString = KVMessage.marshall(key);
+		if (keyAsString.getBytes().length > 256){
+			throw new KVException(new KVMessage("Over sized key", null, null));
 		}
-
-		System.out.println(respMessage.msgType);
-
-		return respMessage.status;
-
-		 
+		
+		String valueAsString = KVMessage.marshall(value);
+		if(valueAsString.getBytes().length > 131072){
+			throw new KVException(new KVMessage("Over sized value", null, null);
+		}
+		
+		Socket s = null;
+		
+		//TODO: Try/catch this
+		s = new Socket(server, port);
+		
+		OutputStream os = null;
+		
+		//TODO: Try/catch this
+		os = socket.getOutputStream();
+		
+		PrintWriter pw = new PrintWriter(os);
+		KVMessage reqMessage = new KVMessage("putreq", keyAsString, valueAsString);
+		String xml = reqMessage.toXML();
+		pw.write(xml);
+		
+		//TODO: Try/catch this
+		s.setSoTimeout(10000);
+		
+		InputStream is = null;
+		
+		//TODO: Try/catch this
+		is = s.getInputStream();
+		
+		KVMessage respMessage = null;
+		respMessage = new KVMessage(is);
+		
+		//TODO: Try/catch this
+		s.close();
+		
+		return respMessage.getStatus().equals("true")
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public V get(K key) throws KVException {
-		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-		ObjectOutputStream marshaller = new ObjectOutputStream(byteStream);
-
-		//TODO: write key to marshaller
-
-		//TODO: byte[] keyByteArray = byteStream's byte array
-
-		String mKey = new String(keyByteArray);
-
-		//TODO: close byteStream and marshaller
-		
-		reqMessage = new KVMessage("getreq", mKey, "");
-
-		//TODO: write reqMessage.toXML() to outStream
-		
-		try{
-			KVMessage respMessage = new KVMessage(inStream);
-		} catch (KVException e){
-			System.out.println("XML Error: Received unparsable message");
-			exit();
+		String keyAsString = KVMessage.marshall(key);
+		if (keyAsString.getBytes().length > 256){
+			throw new KVException(new KVMessage("Over sized key", null, null));
 		}
-
-		System.out.println(respMessage.msgType);
-
-		return respMessage.status;
+		
+		Socket s = null;
+		
+		//TODO: Try/catch this
+		s = new Socket(server, port);
+		
+		OutputStream os = null;
+		
+		//TODO: Try/catch this
+		os = socket.getOutputStream();
+		
+		PrintWriter pw = new PrintWriter(os);
+		KVMessage reqMessage = new KVMessage("getreq", keyAsString, valueAsString);
+		String xml = reqMessage.toXML();
+		pw.write(xml);
+		
+		s.setSoTimeout(10000);
+		
+		InputStream is = null;
+		
+		//TODO: Try/catch this
+		is = s.getInputStream();
+		
+		KVMessage respMessage = null;
+		respMessage = new KVMessage(is);
+		
+		//TODO: Try/catch this
+		s.close();
+		
+		if(respMessage.getMessage().equals("Success")){
+			return (V)respMessage.getValue();
+		}
+		else{
+			throw new KVException(respMessage);
+		}
 	}
 
 	@Override
 	public void del(K key) throws KVException {
-		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-		ObjectOutputStream marshaller = new ObjectOutputStream(byteStream);
-
-		//TODO: write key to marshaller
-		//TODO: byte[] keyByteArray = byteStream's byte array
-
-		String mKey = new String(keyByteArray);
-
-		//TODO: close byteStream and marshaller
-
-		reqMessage = new KVMessage("getreq", mKey, "");
-
-		//TODO: write reqMessage.toXML() to outStream
-
-		try{
-			KVMessage respMessage = new KVMessage(inStream);
-		} catch (KVException e) {
-			System.out.println("XML Error: Received unparsable message");
-			exit();
+		String keyAsString = KVMessage.marshall(key);
+		if (keyAsString.getBytes().length > 256){
+			throw new KVException(new KVMessage("Over sized key", null, null));
 		}
-
-		System.out.println(respMessage.msgType);
+		
+		Socket s = null;
+		
+		//TODO: Try/catch this
+		s = new Socket(server, port);
+		
+		OutputStream os = null;
+		
+		//TODO: Try/catch this
+		os = socket.getOutputStream();
+		
+		PrintWriter pw = new PrintWriter(os);
+		KVMessage reqMessage = new KVMessage("getreq", keyAsString, valueAsString);
+		String xml = reqMessage.toXML();
+		pw.write(xml);
+		
+		s.setSoTimeout(10000);
+		
+		InputStream is = null;
+		
+		//TODO: Try/catch this
+		is = s.getInputStream();
+		
+		KVMessage respMessage = null;
+		respMessage = new KVMessage(is);
+		
+		//TODO: Try/catch this
+		s.close();
+		
+		if(!respMessage.getMessage().equals("Success")){
+			return (V)respMessage.getValue();
+		}
+		else{
+			throw new KVException(respMessage);
+		}
 	}
-
-	/** Read the object from Base64 string. */
-	public static Object fromString( String s ) throws IOException , ClassNotFoundException {
-        byte [] data = Base64Coder.decode( s );
-        ObjectInputStream ois = new ObjectInputStream( new ByteArrayInputStream(  data ) );
-        Object o  = ois.readObject();
-        ois.close();
-        return o;
-    }
-
-    /** Write the object to a Base64 string. */
-    public static String toString( Serializable o ) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream( baos );
-        oos.writeObject( o );
-        oos.close();
-        return new String( Base64Coder.encode( baos.toByteArray() ) );
-    }
-}
