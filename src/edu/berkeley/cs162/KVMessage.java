@@ -118,4 +118,12 @@ public class KVMessage {
 		// implement me
 		return null;
 	}
+	
+	public String getStatus(){
+		return status;
+	}
+
+	public String getMessage(){
+		return message;
+	}
 }
