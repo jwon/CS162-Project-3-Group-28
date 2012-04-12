@@ -35,8 +35,6 @@ import java.io.*;
 import java.net.*;
 import javax.xml.bind.DatatypeConverter;
 
-
-import java.net.*;
 /**
  * This class is used to communicate with (appropriately marshalling and unmarshalling) 
  * objects implementing the {@link KeyValueInterface}.
