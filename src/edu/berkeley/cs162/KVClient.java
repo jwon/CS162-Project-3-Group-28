@@ -30,8 +30,9 @@
  */
 package edu.berkeley.cs162;
 
-import java.io.Serializable;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
+import javax.xml.bind.DatatypeConverter;
 
 
 /**
@@ -46,9 +47,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	private String server = null;
 	private int port = 0;
 	
-	private InputStream inStream;
-	private OutputStream outStream;
-	
 	/**
 	 * @param server is the DNS reference to the Key-Value server
 	 * @param port is the port on which the Key-Value server is listening
@@ -56,19 +54,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	public KVClient(String server, int port) {
 		this.server = server;
 		this.port = port;
-
-		try{
-			this.socket = new Socket(server, port);
-		} catch (UnknownHostException e){
-			System.out.println("Network Error: Could not connect");
-			exit();
-		} catch (IOException e){
-			System.out.println("Network Error: Could not create socket");
-			exit();
-		}
-
-		outStream = new ByteArrayOutputStream(socket.getOutputStream());
-		inStream = new ByteArrayInputStream(socket.getInputStream());
 	}
 	
 	@Override
@@ -162,4 +147,22 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 
 		System.out.println(respMessage.msgType);
 	}
+
+	/** Read the object from Base64 string. */
+	public static Object fromString( String s ) throws IOException , ClassNotFoundException {
+        byte [] data = Base64Coder.decode( s );
+        ObjectInputStream ois = new ObjectInputStream( new ByteArrayInputStream(  data ) );
+        Object o  = ois.readObject();
+        ois.close();
+        return o;
+    }
+
+    /** Write the object to a Base64 string. */
+    public static String toString( Serializable o ) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream( baos );
+        oos.writeObject( o );
+        oos.close();
+        return new String( Base64Coder.encode( baos.toByteArray() ) );
+    }
 }
