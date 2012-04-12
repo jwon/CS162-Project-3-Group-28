@@ -49,7 +49,7 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	 * @param cacheSize number of entries in the data Cache.
 	 */
 	public KeyServer(int cacheSize) {
-	    dataCache = dataCache(cacheSize);
+	    dataCache = new KVCache(cacheSize);
 	    dataStore = new KVStore();
 	}
 	
