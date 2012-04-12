@@ -78,19 +78,88 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		ObjectOutputStream marshaller = new ObjectOutputStream(byteStream);
 
 		//TODO: write key to marshaller
+		//TODO: check that byte array isn't longer than 256 bytes
+
+		String mKey = new String(keyByteArray);
+		//is this right? Or am I supposed to use javax?
 		
+
+		//TODO: Same process as above but for value, into a String mValue
+		//TODO: close byteStream and marshaller
+
+		//TODO: try/catch network errors?
+
+		KVMessage reqMessage = new KVMessage("putreq", mKey, mValue);
+
+		//TODO: write reqMessage.toXML() to outStream but convert to byte[] first
+
+		try{
+			KVMessage respMessage = new KVMessage(inStream);
+		} catch (KVException e){
+			System.out.println("XML Error: Received unparsable message");
+			exit();
+		}
+
+		System.out.println(respMessage.msgType);
+
+		return respMessage.status;
+
 		 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public V get(K key) throws KVException {
-		// implement me
-		return null;
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		ObjectOutputStream marshaller = new ObjectOutputStream(byteStream);
+
+		//TODO: write key to marshaller
+
+		//TODO: byte[] keyByteArray = byteStream's byte array
+
+		String mKey = new String(keyByteArray);
+
+		//TODO: close byteStream and marshaller
+		
+		reqMessage = new KVMessage("getreq", mKey, "");
+
+		//TODO: write reqMessage.toXML() to outStream
+		
+		try{
+			KVMessage respMessage = new KVMessage(inStream);
+		} catch (KVException e){
+			System.out.println("XML Error: Received unparsable message");
+			exit();
+		}
+
+		System.out.println(respMessage.msgType);
+
+		return respMessage.status;
 	}
 
 	@Override
 	public void del(K key) throws KVException {
-		// implement me		
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		ObjectOutputStream marshaller = new ObjectOutputStream(byteStream);
+
+		//TODO: write key to marshaller
+		//TODO: byte[] keyByteArray = byteStream's byte array
+
+		String mKey = new String(keyByteArray);
+
+		//TODO: close byteStream and marshaller
+
+		reqMessage = new KVMessage("getreq", mKey, "");
+
+		//TODO: write reqMessage.toXML() to outStream
+
+		try{
+			KVMessage respMessage = new KVMessage(inStream);
+		} catch (KVException e) {
+			System.out.println("XML Error: Received unparsable message");
+			exit();
+		}
+
+		System.out.println(respMessage.msgType);
 	}
 }
