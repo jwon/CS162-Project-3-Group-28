@@ -77,12 +77,20 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	
 	public V get (K key) throws KVException {
 		// implement me
-		return null;
+		string keyString = KVMessage.marshall(key);
+		if(dataCache.get(key) != null){
+			return dataCache.get(key);
+		} else if (dataStore.get(key) != null) {
+			return dataStore.get(key);
+		} else {
+			throw new KVException(KVMessage("Does not exist"), keyString, null);
+		}
 	}
 
 	@Override
 	public void del(K key) throws KVException {
-		// implement me		
+		dataCache.del(key);
+		dataStore.del(key);
 	}
 }
 
