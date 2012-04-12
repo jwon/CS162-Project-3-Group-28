@@ -45,10 +45,6 @@ public class ThreadPool {
 	{
 		// implement me
 		threads = new Threads[size];
-		for (int i = 0; i < size; i++){
-			threads[i] = new WorkerThread(this);
-		}
-
 	}
 
 	/**
@@ -78,6 +74,11 @@ class WorkerThread extends Thread {
 		// implement me
 		isFree = true;
 
+		for (int i = 0; i < o.threads.length(); i++){
+			if(o.threads[i] == null){
+				o.threads[i] = this;
+			}
+		}
 	}
 
 	/**

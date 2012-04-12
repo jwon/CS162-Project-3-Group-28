@@ -46,6 +46,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	private String server = null;
 	private int port = 0;
 	
+	private InputStream inStream;
+	private OutputStream outStream;
+	
 	/**
 	 * @param server is the DNS reference to the Key-Value server
 	 * @param port is the port on which the Key-Value server is listening
@@ -53,12 +56,30 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	public KVClient(String server, int port) {
 		this.server = server;
 		this.port = port;
+
+		try{
+			this.socket = new Socket(server, port);
+		} catch (UnknownHostException e){
+			System.out.println("Network Error: Could not connect");
+			exit();
+		} catch (IOException e){
+			System.out.println("Network Error: Could not create socket");
+			exit();
+		}
+
+		outStream = new ByteArrayOutputStream(socket.getOutputStream());
+		inStream = new ByteArrayInputStream(socket.getInputStream());
 	}
 	
 	@Override
 	public boolean put(K key, V value) throws KVException {
-		// implement me
-		return false;
+		byte[] keyByteArray;
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream(keyByteArray);
+		ObjectOutputStream marshaller = new ObjectOutputStream(byteStream);
+
+		//TODO: write key to marshaller
+		
+		 
 	}
 
 	@SuppressWarnings("unchecked")
