@@ -76,7 +76,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		OutputStream os = null;
 		
 		//TODO: Try/catch this
-		os = socket.getOutputStream();
+		os = s.getOutputStream();
 		
 		PrintWriter pw = new PrintWriter(os);
 		KVMessage reqMessage = new KVMessage("putreq", keyAsString, valueAsString);
@@ -116,10 +116,10 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		OutputStream os = null;
 		
 		//TODO: Try/catch this
-		os = socket.getOutputStream();
+		os = s.getOutputStream();
 		
 		PrintWriter pw = new PrintWriter(os);
-		KVMessage reqMessage = new KVMessage("getreq", keyAsString, valueAsString);
+		KVMessage reqMessage = new KVMessage("getreq", keyAsString, null);
 		String xml = reqMessage.toXML();
 		pw.write(xml);
 		
@@ -159,10 +159,10 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		OutputStream os = null;
 		
 		//TODO: Try/catch this
-		os = socket.getOutputStream();
+		os = s.getOutputStream();
 		
 		PrintWriter pw = new PrintWriter(os);
-		KVMessage reqMessage = new KVMessage("getreq", keyAsString, valueAsString);
+		KVMessage reqMessage = new KVMessage("getreq", keyAsString, null);
 		String xml = reqMessage.toXML();
 		pw.write(xml);
 		
