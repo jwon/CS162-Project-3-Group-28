@@ -56,34 +56,34 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	public boolean put(K key, V value) throws KVException {
 	    String keyString = KVMessage.marshall(key);
 	    String valueString = KVMessage.marshall(value);
-	    byte[] size = (keyString).getBytes;
+	    byte[] size = (keyString).getBytes();
 	    if (size.length > 256)
-		throw new KVException(KVMessage("Over sized key", keyString, valueString));
+		throw new KVException(new KVMessage("Over sized key", keyString, valueString));
 	    if (size.length == 0)
-		throw new KVException(KVMessage("Empty key", keyString, valueString));
-	    size = (valueString).getBytes;
+		throw new KVException(new KVMessage("Empty key", keyString, valueString));
+	    size = (valueString).getBytes();
 	    if (size.length > 131072)
-		throw new KVException(KVMessage("Over sized value", keyString, valueString));
+		throw new KVException(new KVMessage("Over sized value", keyString, valueString));
 	    if (size.length == 0)
-		throw new KVException(KVMessage("Empty value", keyString, valueString));
+		throw new KVException(new KVMessage("Empty value", keyString, valueString));
 	    boolean store = dataStore.put(key,value);
 	    boolean cache = dataCache.put(key,value);
 	    if (store == true)
 		return true;
 	    if (store == false && cache == false)
 		return false;
-	    else throw new KVException(KVMessage("Unknown Error: cache and store not in sync", keyString, valueString));
+	    else throw new KVException(new KVMessage("Unknown Error: cache and store not in sync", keyString, valueString));
 	}
 	
 	public V get (K key) throws KVException {
 		// implement me
-		string keyString = KVMessage.marshall(key);
+		String keyString = KVMessage.marshall(key);
 		if(dataCache.get(key) != null){
 			return dataCache.get(key);
 		} else if (dataStore.get(key) != null) {
 			return dataStore.get(key);
 		} else {
-			throw new KVException(KVMessage("Does not exist", keyString, null);
+			throw new KVException(new KVMessage("Does not exist", keyString, null));
 		}
 	}
 
