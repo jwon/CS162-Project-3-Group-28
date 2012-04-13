@@ -46,7 +46,7 @@ public class ThreadPool {
 	public ThreadPool(int size)
 	{
 		// implement me
-		threads = new Threads[size];
+		threads = new Thread[size];
 		for(int i = 0; i < size; i++){
 			threads[i] = new WorkerThread(this);
 		}
@@ -78,7 +78,7 @@ class WorkerThread extends Thread {
 	WorkerThread(ThreadPool o)
 	{
 		// implement me
-		this.threadpool = o;
+		this.myThreadPool = o;
 	}
 
 	/**
