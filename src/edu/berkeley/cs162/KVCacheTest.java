@@ -9,7 +9,7 @@ import java.util.concurrent.locks.Lock;
 
 public class KVCacheTest {
 
-	public void cacheTest(){
+	static void cacheTest(){
 
 		KVCache<Integer, Integer> testCache = new KVCache<Integer, Integer>(100);
 
@@ -34,5 +34,9 @@ public class KVCacheTest {
 		testCache.put(102, 102);
 		assertTrue(testCache.get(1)==1 && testCache.get(2)==null && testCache.filledEntries()==100);
 		
+	}
+	
+	public static void main(String[] args){
+		cacheTest();
 	}
 }
