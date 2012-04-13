@@ -134,11 +134,10 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		if(respMessage.getMessage().equals("Success")){
-			return respMessage.getStatus()
+			return respMessage.getStatus();
 		}
 		else{
 			throw new KVException(new KVMessage(respMessage.getMessage(), keyAsString, valueAsString));
-			return false;
 		}
 
 	}
