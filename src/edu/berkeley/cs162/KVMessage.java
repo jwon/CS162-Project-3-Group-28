@@ -36,6 +36,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -91,23 +92,25 @@ public class KVMessage {
 	}
 	
 	/** Read the object from Base64 string. */
-    public static Object marshall( String s ) throws IOException ,
-                                                        ClassNotFoundException {
-        byte [] data = Base64Coder.decode( s );
-        ObjectInputStream ois = new ObjectInputStream( 
-                                        new ByteArrayInputStream(  data ) );
+    public static Object unmarshall(String s) throws IOException, ClassNotFoundException {
+        byte [] data = DatatypeConverter.parseBase64Binary(s);
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         Object o  = ois.readObject();
         ois.close();
         return o;
     }
 
     /** Write the object to a Base64 string. */
-    public static String unmarshall( Serializable o ) throws IOException {
+    public static String marshall( Serializable o ) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream( baos );
-        oos.writeObject( o );
-        oos.close();
-        return new String( Base64Coder.encode( baos.toByteArray() ) );
+        try {
+			ObjectOutputStream oos = new ObjectOutputStream( baos );
+			oos.writeObject( o );
+			oos.close();
+		} catch (IOException e) {
+			// Shouldn't happen
+		}
+        return new String( DatatypeConverter.printBase64Binary(baos.toByteArray()));
     }
 
 	
