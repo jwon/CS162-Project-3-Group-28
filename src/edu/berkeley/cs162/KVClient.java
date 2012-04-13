@@ -227,7 +227,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		else{
 			throw new KVException(new KVMessage(respMessage.getMessage(), keyAsString, null));
-			return null;
 		}
 	}
 
