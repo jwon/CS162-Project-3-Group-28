@@ -134,7 +134,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						e1.printStackTrace();
 					}
 				} catch (DataFormatException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else if (message.getMsgType() == "delreq") {
@@ -153,7 +152,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						e1.printStackTrace();
 					}
 				} catch (DataFormatException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
