@@ -62,6 +62,7 @@ public class ThreadPool {
 	{
 		// implement me
 		queueOfTasks.add(r);
+		queueOfTasks.notify();
 	}
 }
 
@@ -70,7 +71,6 @@ public class ThreadPool {
  */
 class WorkerThread extends Thread {
 	protected ThreadPool myThreadPool;
-	protected Runnable task;
 
 	/**
 	 * @param o the thread pool 
@@ -79,7 +79,6 @@ class WorkerThread extends Thread {
 	{
 		// implement me
 		this.threadpool = o;
-		this.task = null;
 	}
 
 	/**
@@ -90,20 +89,24 @@ class WorkerThread extends Thread {
 		// implement me
 		Runnable first;
 
-		if(this.task == null){
-			synchronized (this){
+		while(true){
+			synchronized (myThreadPool.queueOfTasks){
+				while(myThreadPool.queueOfTasks.isEmpty()){
+					try{
+						myThreadPool.queueOfTasks.wait();
+					} catch (InterruptedException e) {
+						System.out.println(e);
+					}
+				}
+
 				first = myThreadPool.queueOfTasks.pollFirst();
-			}
-			if(first == null){ //if queue is empty
-				this.yield();
-			}
-			else{
-				this.task = first;
+
+				try{
+					first.run();
+				} catch (Exception e){
+					System.out.println(e);
+				}
 			}
 		}
-
-		this.task.run();
-		this.task = null;
-		this.run();
 	}
 }
