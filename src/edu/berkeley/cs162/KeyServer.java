@@ -54,17 +54,17 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	}
 	
 	public boolean put(K key, V value) throws KVException {
-	    string keyString = KVMessage.marshall(key);
-	    string valueString = KVMessage.marshall(key);
+	    String keyString = KVMessage.marshall(key);
+	    String valueString = KVMessage.marshall(value);
 	    byte[] size = (keyString).getBytes;
-	    if (size.length() > 256)
+	    if (size.length > 256)
 		throw new KVException(KVMessage("Over sized key", keyString, valueString));
-	    if (size == 0)
+	    if (size.length == 0)
 		throw new KVException(KVMessage("Empty key", keyString, valueString));
 	    size = (valueString).getBytes;
-	    if (size.length() > 131072)
+	    if (size.length > 131072)
 		throw new KVException(KVMessage("Over sized value", keyString, valueString));
-	    if (size == 0)
+	    if (size.length == 0)
 		throw new KVException(KVMessage("Empty value", keyString, valueString));
 	    boolean store = dataStore.put(key,value);
 	    boolean cache = dataCache.put(key,value);
@@ -72,7 +72,7 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		return true;
 	    if (store == false && cache == false)
 		return false;
-	    else throw new KVException(KVMessage("Unknown Error: cache and store not in sync"));
+	    else throw new KVException(KVMessage("Unknown Error: cache and store not in sync", keyString, valueString));
 	}
 	
 	public V get (K key) throws KVException {
@@ -83,7 +83,7 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		} else if (dataStore.get(key) != null) {
 			return dataStore.get(key);
 		} else {
-			throw new KVException(KVMessage("Does not exist"), keyString, null);
+			throw new KVException(KVMessage("Does not exist", keyString, null);
 		}
 	}
 
