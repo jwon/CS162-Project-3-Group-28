@@ -41,7 +41,7 @@ import java.net.Socket;
 public class SocketServer {
 	String hostname;
 	int port;
-	NetworkHandler handler;
+	KVClientHandler handler;
 	ServerSocket server;
 	Socket clientSocket;
 	
@@ -62,13 +62,14 @@ public class SocketServer {
 	 */
 	public void run() throws IOException {
 		// implement me
+		this.handler.handle(clientSocket);
 	}
 	
 	/** 
 	 * Add the network handler for the current socket server
 	 * @param handler is logic for servicing a network connection
 	 */
-	public void addHandler(NetworkHandler handler) {
+	public void addHandler(KVClientHandler handler) {
 		// implement me
 		this.handler = handler;
 	}
