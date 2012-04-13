@@ -70,34 +70,77 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		Socket s = null;
 		
-		//TODO: Try/catch this
-		s = new Socket(server, port);
+		try{
+			s = new Socket(server, port);
+		} catch (UnknownHostException e){
+			throw new KVException(new KVMessage("Network Error: Could not create socket", keyAsString, valueAsString));
+		} catch (IOException e){
+			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+		}
 		
 		OutputStream os = null;
 		
-		//TODO: Try/catch this
-		os = s.getOutputStream();
+		try{
+			os = s.getOutputStream();
+		} catch(IOException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("Network Error: Could not send data", keyAsString, valueAsString));
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			}
+		}
+
+
 		
 		PrintWriter pw = new PrintWriter(os);
 		KVMessage reqMessage = new KVMessage("putreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
 		pw.write(xml);
 		
-		//TODO: Try/catch this
-		s.setSoTimeout(10000);
+		try{
+			s.setSoTimeout(10000);
+		} catch(SocketException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			}
+		}
+
 		
 		InputStream is = null;
 		
-		//TODO: Try/catch this
-		is = s.getInputStream();
+		try{
+			is = s.getInputStream();
+		} catch(IOException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			}
+		}
+
 		
 		KVMessage respMessage = null;
 		respMessage = new KVMessage(is);
 		
-		//TODO: Try/catch this
-		s.close();
+		try{
+			s.close();
+		} catch(IOException e){
+			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+		}
 		
-		return respMessage.getStatus().equals("true")
+		if(respMessage.getMessage().equals("Success")){
+			return respMessage.getStatus().equals("true")
+		}
+		else{
+			throw new KVException(new KVMessage(respMessage.getMessage(), keyAsString, valueAsString));
+			return false;
+		}
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -108,39 +151,86 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			throw new KVException(new KVMessage("Over sized key", null, null));
 		}
 		
+		String valueAsString = null;
+		
 		Socket s = null;
 		
-		//TODO: Try/catch this
-		s = new Socket(server, port);
+		try{
+			s = new Socket(server, port);
+		} catch (UnknownHostException e){
+			throw new KVException(new KVMessage("Network Error: Could not create socket", keyAsString, valueAsString));
+		} catch (IOException e){
+			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+		}
 		
 		OutputStream os = null;
 		
-		//TODO: Try/catch this
-		os = s.getOutputStream();
+		try{
+			os = s.getOutputStream();
+		} catch(IOException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("Network Error: Could not send data", keyAsString, valueAsString));
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			}
+		}
+
+
 		
 		PrintWriter pw = new PrintWriter(os);
-		KVMessage reqMessage = new KVMessage("getreq", keyAsString, null);
+		KVMessage reqMessage = new KVMessage("getreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
 		pw.write(xml);
 		
-		s.setSoTimeout(10000);
+		try{
+			s.setSoTimeout(10000);
+		} catch(SocketException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			}
+		}
+
 		
 		InputStream is = null;
 		
-		//TODO: Try/catch this
-		is = s.getInputStream();
+		try{
+			is = s.getInputStream();
+		} catch(IOException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			}
+		}
+
 		
 		KVMessage respMessage = null;
 		respMessage = new KVMessage(is);
 		
-		//TODO: Try/catch this
-		s.close();
+		try{
+			s.close();
+		} catch(IOException e){
+			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+		}
 		
 		if(respMessage.getMessage().equals("Success")){
-			return (V)respMessage.getValue();
+			V value null;
+			try{
+				value = (V) KVMessage.unmarshall(respMessage.getValue());
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, respMessage.getValue()));
+			}
+
+			return value;
 		}
 		else{
-			throw new KVException(respMessage);
+			throw new KVException(new KVMessage(respMessage.getMessage(), keyAsString, null));
+			return false;
 		}
 	}
 
@@ -151,38 +241,76 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			throw new KVException(new KVMessage("Over sized key", null, null));
 		}
 		
+		String valueAsString = null;
+		
 		Socket s = null;
 		
-		//TODO: Try/catch this
-		s = new Socket(server, port);
+		try{
+			s = new Socket(server, port);
+		} catch (UnknownHostException e){
+			throw new KVException(new KVMessage("Network Error: Could not create socket", keyAsString, valueAsString));
+		} catch (IOException e){
+			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+		}
 		
 		OutputStream os = null;
 		
-		//TODO: Try/catch this
-		os = s.getOutputStream();
+		try{
+			os = s.getOutputStream();
+		} catch(IOException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("Network Error: Could not send data", keyAsString, valueAsString));
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			}
+		}
+
+
 		
 		PrintWriter pw = new PrintWriter(os);
-		KVMessage reqMessage = new KVMessage("getreq", keyAsString, null);
+		KVMessage reqMessage = new KVMessage("delreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
 		pw.write(xml);
 		
-		s.setSoTimeout(10000);
+		try{
+			s.setSoTimeout(10000);
+		} catch(SocketException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			}
+		}
+
 		
 		InputStream is = null;
 		
-		//TODO: Try/catch this
-		is = s.getInputStream();
+		try{
+			is = s.getInputStream();
+		} catch(IOException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+			} catch (IOException e){
+				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			}
+		}
+
 		
 		KVMessage respMessage = null;
 		respMessage = new KVMessage(is);
 		
-		//TODO: Try/catch this
-		s.close();
+		try{
+			s.close();
+		} catch(IOException e){
+			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+		}
 		
 		if(!respMessage.getMessage().equals("Success")){
-			return (V)respMessage.getValue();
+			throw new KVException(new KVMessage(respMessage.getMessage(), keyAsString, null));
+			return false;
 		}
-		else{
-			throw new KVException(respMessage);
-		}
+
 	}
