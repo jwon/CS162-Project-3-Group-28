@@ -32,7 +32,19 @@ package edu.berkeley.cs162;
 import java.io.*;
 import java.util.zip.DataFormatException;
 import java.io.FilterInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+
+import javax.xml.transform.TransformerFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLFilterImpl;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 
 /**
@@ -105,11 +117,80 @@ public class KVMessage {
 	    public void close() {} // ignore close
 	}
 	
-	public KVMessage(InputStream input) throws KVException {
-		// implement me	
+	public KVMessage(InputStream input)  {
+		XMLReader xr;
+		xr = new XMLFilterImpl();
+		
+		try {
+			xr.parse(new InputSource(input));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+		}
+	}
+	
+	private class MyParser extends XMLFilterImpl { 
+		private String elementString;
+		
+		
+		private MyParser() {
+			super();
+		}
+		
+		@Override
+		public void fatalError(SAXParseException e)
+                throws SAXException {
+			
+		}
+
+
+		@Override
+		public void startElement(String uri,
+                String localName,
+                String qName,
+                Attributes attributes)
+         throws SAXException {
+			elementString = null; // necessary?
+			if (localName.equals("KVMessage")) {
+				msgType = attributes.getValue(0); // Get the first attribute, which is the only attribute, which is "type
+			}
+		}
+		
+		@Override
+		public void characters(char[] ch,
+                int start,
+                int length)
+         throws SAXException {
+			elementString = new String(ch, start, length);
+			
+			
+		}
+		
+		@Override
+		public void endElement(String uri,
+                String localName,
+                String qName)
+         throws SAXException {
+			switch(localName) {
+			
+			case "Key":
+				key = elementString;
+			case "Value":
+				value = elementString;
+			case "Message":
+				message = elementString;
+			case "Status":
+				status = Boolean.getBoolean(elementString);
+			}
+		}
 	}
 
 	
+	
+
+
 	/**
 	 * Generate the XML representation for this message.
 	 * @return the XML String
@@ -117,6 +198,18 @@ public class KVMessage {
 	public String toXML() {
 		// implement me
 		return null;
+	}
+	
+	public String getMsgType() {
+		return msgType;
+	}
+	
+	public String getKey() {
+		return key;
+	}
+	
+	public String getValue() {
+		return value;
 	}
 	
 	public boolean getStatus(){
