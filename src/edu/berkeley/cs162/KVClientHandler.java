@@ -29,9 +29,13 @@
  */
 package edu.berkeley.cs162;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.Socket;
+import java.util.zip.DataFormatException;
 
 /**
  * This NetworkHandler will asynchronously handle the socket connections. 
@@ -87,27 +91,75 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 		//Should I have the the runnable return a response based on the result of
 		//the appropriate request to keyserver?
 		public void run() {
+			OutputStream os = null;
+			try {
+				os = s1.getOutputStream();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			
+			PrintWriter pw = new PrintWriter(os);
+			KVMessage response = null;
+			
 			if(message.getMsgType() == "getreq") {
 				try {
-					keyserver.get((K)message.getKey());
+					String value = (String) keyserver.get((K)message.getKey());
+					response = new KVMessage("resp" , message.getKey(), value);
+					String xml = response.toXML();
+					pw.write(xml);
 				} catch (KVException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					try {
+						response = new KVMessage("resp", e.getMsg().getKey(), 
+								e.getMsg().getValue(), e.getMsg().getStatus(), "Error Message");
+						String xml = response.toXML();
+						pw.write(xml);
+					} catch (DataFormatException e1) {
+						e1.printStackTrace();
+					}
 				}
 			} else if (message.getMsgType() == "putreq") {
 				 try {
-					keyserver.put((K)message.getKey(), (V) message.getValue());
+					boolean result = keyserver.put((K)message.getKey(), (V) message.getValue());
+					response = new KVMessage("resp" , null, null, result, "Success");
+					String xml = response.toXML();
+					pw.write(xml);
 				} catch (KVException e) {
-					// TODO Auto-generated catch block
+					try {
+						response = new KVMessage("resp", e.getMsg().getKey(), 
+								e.getMsg().getValue(), e.getMsg().getStatus(), "Error Message");
+						String xml = response.toXML();
+						pw.write(xml);
+					} catch (DataFormatException e1) {
+						e1.printStackTrace();
+					}
+				} catch (DataFormatException e) {
 					e.printStackTrace();
 				}
 			} else if (message.getMsgType() == "delreq") {
 				try {
 					keyserver.del((K)message.getKey());
+					response = new KVMessage("resp" , null, null, false, "Success");
+					String xml = response.toXML();
+					pw.write(xml);
 				} catch (KVException e) {
-					// TODO Auto-generated catch block
+					try {
+						response = new KVMessage("resp", e.getMsg().getKey(), 
+								e.getMsg().getValue(), e.getMsg().getStatus(), "Error Message");
+						String xml = response.toXML();
+						pw.write(xml);
+					} catch (DataFormatException e1) {
+						e1.printStackTrace();
+					}
+				} catch (DataFormatException e) {
 					e.printStackTrace();
 				}
+			}
+			
+			try {
+				s1.close();
+			} catch(IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

@@ -36,6 +36,14 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.transform.TransformerFactory;
 
 import org.xml.sax.Attributes;
@@ -53,6 +61,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * for communication between clients and servers. Data is stored in a 
  * marshalled String format in this object.
  */
+@XmlRootElement
 public class KVMessage {
 	private String msgType = null;
 	private String key = null;
@@ -83,23 +92,25 @@ public class KVMessage {
 	}
 	
 	/** Read the object from Base64 string. */
-    public static Object marshall( String s ) throws IOException ,
-                                                        ClassNotFoundException {
-        byte [] data = Base64Coder.decode( s );
-        ObjectInputStream ois = new ObjectInputStream( 
-                                        new ByteArrayInputStream(  data ) );
+    public static Object unmarshall(String s) throws IOException, ClassNotFoundException {
+        byte [] data = DatatypeConverter.parseBase64Binary(s);
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         Object o  = ois.readObject();
         ois.close();
         return o;
     }
 
     /** Write the object to a Base64 string. */
-    public static String unmarshall( Serializable o ) throws IOException {
+    public static String marshall( Serializable o ) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream( baos );
-        oos.writeObject( o );
-        oos.close();
-        return new String( Base64Coder.encode( baos.toByteArray() ) );
+        try {
+			ObjectOutputStream oos = new ObjectOutputStream( baos );
+			oos.writeObject( o );
+			oos.close();
+		} catch (IOException e) {
+			// Shouldn't happen
+		}
+        return new String( DatatypeConverter.printBase64Binary(baos.toByteArray()));
     }
 
 	
@@ -114,74 +125,27 @@ public class KVMessage {
 	}
 	
 	public KVMessage(InputStream input)  {
-		XMLReader xr;
-		xr = new XMLFilterImpl();
-		
+		KVMessage dummy;
 		try {
-			xr.parse(new InputSource(input));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			JAXBContext jaxbContext = JAXBContext.newInstance(KVMessage.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
+			dummy = (KVMessage) jaxbUnmarshaller.unmarshal(new NoCloseInputStream(input));
+		} catch (UnmarshalException e) {
+			// XXX Not sure what to do here; should throw an exception and die at this point
+			return;
+		} catch (JAXBException e) {
+			return;
 		}
+		
+		this.msgType = dummy.msgType;
+		this.key = dummy.key;
+		this.value = dummy.value;
+		this.status = dummy.status;
+		this.message = dummy.message;
 	}
 	
-	private class MyParser extends XMLFilterImpl { 
-		private String elementString;
-		
-		
-		private MyParser() {
-			super();
-		}
-		
-		@Override
-		public void fatalError(SAXParseException e)
-                throws SAXException {
-			
-		}
-
-
-		@Override
-		public void startElement(String uri,
-                String localName,
-                String qName,
-                Attributes attributes)
-         throws SAXException {
-			elementString = null; // necessary?
-			if (localName.equals("KVMessage")) {
-				msgType = attributes.getValue(0); // Get the first attribute, which is the only attribute, which is "type
-			}
-		}
-		
-		@Override
-		public void characters(char[] ch,
-                int start,
-                int length)
-         throws SAXException {
-			elementString = new String(ch, start, length);
-			
-			
-		}
-		
-		@Override
-		public void endElement(String uri,
-                String localName,
-                String qName)
-         throws SAXException {
-			switch(localName) {
-			
-			case "Key":
-				key = elementString;
-			case "Value":
-				value = elementString;
-			case "Message":
-				message = elementString;
-			case "Status":
-				status = Boolean.getBoolean(elementString);
-			}
-		}
-	}
+	
 
 	
 	
@@ -192,26 +156,60 @@ public class KVMessage {
 	 * @return the XML String
 	 */
 	public String toXML() {
-		// implement me
-		return null;
+		StringWriter sw = new StringWriter();
+		
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(KVMessage.class);
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+ 
+			jaxbMarshaller.marshal(this, sw);
+		} catch (JAXBException e) {
+			
+		}
+		return sw.toString();
+	}
+	
+	@XmlElement
+	public void setMsgType(String msgType) {
+		this.msgType = msgType;
 	}
 	
 	public String getMsgType() {
 		return msgType;
 	}
 	
+	@XmlElement
+	public void setKey(String key) {
+		this.key = key;
+	}
+	
 	public String getKey() {
 		return key;
+	}
+	
+	@XmlElement
+	public void setValue(String value) {
+		this.value = value;
 	}
 	
 	public String getValue() {
 		return value;
 	}
 	
+	@XmlElement
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	
 	public boolean getStatus(){
 		return status;
 	}
 
+	@XmlElement
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
 	public String getMessage(){
 		return message;
 	}

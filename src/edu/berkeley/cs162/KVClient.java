@@ -124,8 +124,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 
 		
-		KVMessage respMessage = null;
-		respMessage = new KVMessage(is);
+		KVMessage respMessage = new KVMessage(is);
 		
 		try{
 			s.close();
@@ -208,8 +207,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 
 		
-		KVMessage respMessage = null;
-		respMessage = new KVMessage(is);
+		KVMessage respMessage = new KVMessage(is);
 		
 		try{
 			s.close();
@@ -298,8 +296,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 
 		
-		KVMessage respMessage = null;
-		respMessage = new KVMessage(is);
+		KVMessage respMessage = new KVMessage(is);
 		
 		try{
 			s.close();

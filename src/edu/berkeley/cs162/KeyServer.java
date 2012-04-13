@@ -89,6 +89,10 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 
 	@Override
 	public void del(K key) throws KVException {
+		String keyString = KVMessage.marshall(key);
+		if(dataCache.get(key) == null && dataStore.get(key) == null) {
+			throw new KVException(new KVMessage("Does not exist", keyString, null));
+		}
 		dataCache.del(key);
 		dataStore.del(key);
 	}
