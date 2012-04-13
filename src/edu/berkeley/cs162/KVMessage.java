@@ -29,6 +29,7 @@
  */
 package edu.berkeley.cs162;
 
+import java.util.*;
 import java.io.*;
 import java.util.zip.DataFormatException;
 import java.io.FilterInputStream;
@@ -81,30 +82,25 @@ public class KVMessage {
 			throw new DataFormatException("Over sized value");
 	}
 	
-	// Converts a Serializable Object into a String.
-	public static String marshall(Serializable o) {
-		if (o == null) return "";
-		
-		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-		ObjectOutputStream objectStream;
-		try {
-			objectStream = new ObjectOutputStream(byteStream);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "";
-		}
-		
-		try {
-			objectStream.writeObject(o);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "";
-		}
-		
-		return new String(byteStream.toByteArray());
-	}
+	/** Read the object from Base64 string. */
+    public static Object marshall( String s ) throws IOException ,
+                                                        ClassNotFoundException {
+        byte [] data = Base64Coder.decode( s );
+        ObjectInputStream ois = new ObjectInputStream( 
+                                        new ByteArrayInputStream(  data ) );
+        Object o  = ois.readObject();
+        ois.close();
+        return o;
+    }
+
+    /** Write the object to a Base64 string. */
+    public static String unmarshall( Serializable o ) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream( baos );
+        oos.writeObject( o );
+        oos.close();
+        return new String( Base64Coder.encode( baos.toByteArray() ) );
+    }
 
 	
 	/* Hack for ensuring XML libraries does not close input stream by default.
