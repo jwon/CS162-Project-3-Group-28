@@ -39,7 +39,6 @@ import java.util.concurrent.locks.Lock;
  */
 public class KVCache<K extends Serializable, V extends Serializable> implements KeyValueInterface<K, V>{
 	private int cacheSize;
-	private int maxSize;
 	private LinkedHashMap<K,V> cache;
 	private LinkedList<K> order;
 	Lock accessLock;
@@ -52,7 +51,7 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 		// implement me
 		cache = new LinkedHashMap<K, V>(cacheSize);
 		order = new LinkedList<K>();
-		maxSize = cacheSize;
+		this.cacheSize = cacheSize;
 	}
 
 	/**
@@ -92,12 +91,12 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 			order.remove(key);
 			cache.put(key, value);
 			order.add(key);
-			while(cache.size()>maxSize){
+			while(cache.size()>cacheSize){
 				K toRemove = order.remove();
 				cache.remove(toRemove);
 			}
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -108,5 +107,10 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 		// implement me
 		order.remove(key);
 		cache.remove(key);
+	}
+	
+	//this method for testing purposes only
+	public int filledEntries(){
+		return cache.size();
 	}
 } // end class LRUCache
