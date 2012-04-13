@@ -51,7 +51,6 @@ public class PingPong {
 				String pong = "pong"; 
 				writer.println(pong);
 				writer.close();
-				System.out.println(pong);
 			} catch (IOException e){
 				e.printStackTrace();
 			}
