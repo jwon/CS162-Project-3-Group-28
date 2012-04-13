@@ -30,6 +30,7 @@ package edu.berkeley.cs162;
 import java.io.Serializable;
 
 import java.net.*;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.concurrent.locks.Lock;
@@ -39,7 +40,7 @@ import java.util.concurrent.locks.Lock;
  */
 public class KVCache<K extends Serializable, V extends Serializable> implements KeyValueInterface<K, V>{
 	private int cacheSize;
-	private LinkedHashMap<K,V> cache;
+	private HashMap<K,V> cache;
 	private LinkedList<K> order;
 	Lock accessLock;
 
@@ -63,14 +64,9 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	public V get (K key) {
 		// implement me
 		V value;
-		synchronized(this){
-			value = cache.get(key);
-			if (value!=null){
-				cache.remove(key);
-				order.remove(key);
-				cache.put(key, value);
-				order.add(key);
-			}
+		value = cache.get(key);
+		if (value!=null){
+			this.updateLRUOrder(key);
 		}
 		return value;
 	}
@@ -86,17 +82,29 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	 */
 	public boolean put (K key, V value) {
 		// implement me
+		updateLRUOrder(key);
+
+		V existing = cache.get(key);
+
 		synchronized(this){
-			cache.remove(key);
-			order.remove(key);
 			cache.put(key, value);
-			order.add(key);
 			while(cache.size()>cacheSize){
 				K toRemove = order.remove();
 				cache.remove(toRemove);
 			}
 		}
-		return true;
+
+		if (existing!=null){
+			return true;
+		}
+		else return false;
+	}
+
+	private void updateLRUOrder(K key){
+		synchronized(this){
+			order.remove(key);
+			order.add(key);
+		}
 	}
 
 	/**
@@ -108,7 +116,7 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 		order.remove(key);
 		cache.remove(key);
 	}
-	
+
 	//this method for testing purposes only
 	public int filledEntries(){
 		return cache.size();

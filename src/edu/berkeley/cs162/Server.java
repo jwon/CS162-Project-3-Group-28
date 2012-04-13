@@ -44,7 +44,7 @@ public class Server {
 		key_server = new KeyServer<String, String>(1000);
 		server = new SocketServer("localhost", 8080);
 		NetworkHandler handler = new KVClientHandler<String, String>(key_server);
-		server.addHandler((KVClientHandler)(handler));
+		server.addHandler(handler);
 		server.connect();
 		System.out.println("Starting Server");
 		server.run();

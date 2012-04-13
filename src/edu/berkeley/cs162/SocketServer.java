@@ -69,8 +69,8 @@ public class SocketServer {
 	 * Add the network handler for the current socket server
 	 * @param handler is logic for servicing a network connection
 	 */
-	public void addHandler(KVClientHandler handler) {
+	public void addHandler(NetworkHandler handler) {
 		// implement me
-		this.handler = handler;
+		this.handler = (KVClientHandler)handler;
 	}
 }
