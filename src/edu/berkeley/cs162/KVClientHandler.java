@@ -63,30 +63,51 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 	@Override
 	public void handle(Socket client) throws IOException {
 		ConnectionHandler newTask = new ConnectionHandler(client);
-		threadpool.addtoQueue(newTask);		
-		// implement me
+		try {
+			threadpool.addToQueue(newTask);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}		
 	}
 	
-	private class ConnectionHandler() implements Runnable{
+	private class ConnectionHandler implements Runnable{
 		Socket s1;
 		KVMessage message;
 		
 		public ConnectionHandler(Socket client){
 			this.s1 = client;
-			message = KVMessage(s1.getInputStream());
+			try {
+				message = new KVMessage(s1.getInputStream());
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
 		}
 		
 		//Should I have the the runnable return a response based on the result of
 		//the appropriate request to keyserver?
 		public void run() {
-			if(message.msgType == "getreq") {
-				keyserver.get(message.key);
-			} else if (message.msgType = "putreq") {
-				 keyserver.put(message.key, message.value);
-			} else if (message.msgType = "delreq") {
-				keyserver.del(message.key);
-			} else {
-				KVMessage("Unknown Error:Unknown Request" , null, null);
+			if(message.getMsgType() == "getreq") {
+				try {
+					keyserver.get((K)message.getKey());
+				} catch (KVException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else if (message.getMsgType() == "putreq") {
+				 try {
+					keyserver.put((K)message.getKey(), (V) message.getValue());
+				} catch (KVException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else if (message.getMsgType() == "delreq") {
+				try {
+					keyserver.del((K)message.getKey());
+				} catch (KVException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
