@@ -23,9 +23,21 @@ public class ThreadPoolTest {
 			System.out.println("e");
 		    }
 		};
-	test.addToQueue(r);
-	test.addToQueue(r2);
-	test.addToQueue(r3);
+	    try {
+		test.addToQueue(r);
+	    } catch (InterruptedException exception) {
+		System.out.println(exception);
+	    }
+	    try { 
+		test.addToQueue(r2);
+	    } catch (InterruptedException exception) {
+		System.out.println(exception);
+	    }
+	    try {
+		test.addToQueue(r3);
+	    } catch (InterruptedException exception) {
+		System.out.println(exception);
+	    }
 	test.threads[0].run();
 	test.threads[1].run();
 	test.threads[2].run();
