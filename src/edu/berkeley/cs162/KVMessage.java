@@ -119,7 +119,7 @@ public class KVMessage {
 		return null;
 	}
 	
-	public String getStatus(){
+	public boolean getStatus(){
 		return status;
 	}
 
