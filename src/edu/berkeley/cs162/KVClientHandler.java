@@ -157,6 +157,12 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					e.printStackTrace();
 				}
 			}
+			
+			try {
+				s1.close();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
