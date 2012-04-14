@@ -58,21 +58,21 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	    String valueString = KVMessage.marshall(value);
 	    byte[] size = (keyString).getBytes();
 	    if (size.length > 256)
-		throw new KVException(new KVMessage("Over sized key", keyString, valueString));
+		throw new KVException(new KVMessage("resp", keyString, valueString, false, "Over sized key"));
 	    if (size.length == 0)
-		throw new KVException(new KVMessage("Empty key", keyString, valueString));
+	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Empty Key"));
 	    size = (valueString).getBytes();
 	    if (size.length > 131072)
-		throw new KVException(new KVMessage("Over sized value", keyString, valueString));
+	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Over sized value"));
 	    if (size.length == 0)
-		throw new KVException(new KVMessage("Empty value", keyString, valueString));
+	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Empty Value"));
 	    boolean store = dataStore.put(key,value);
 	    boolean cache = dataCache.put(key,value);
 	    if (store == true)
 		return true;
 	    if (store == false && cache == false)
 		return false;
-	    else throw new KVException(new KVMessage("Unknown Error: cache and store not in sync", keyString, valueString));
+	    throw new KVException(new KVMessage("resp", keyString, valueString, false, "Unknown error: cache and store not in sync"));
 	}
 	
 	public V get (K key) throws KVException {
