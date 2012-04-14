@@ -152,7 +152,7 @@ public class KVMessage {
 		try {
 			db = dbf.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			throw new KVException(new KVMessage("error", null, null, false, "Unknown error: Unable to initialize DocumentBuilder"));
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize DocumentBuilder"));
 		}
 		
 		Document d = db.newDocument();
@@ -164,13 +164,13 @@ public class KVMessage {
 		try {
 			t = tf.newTransformer();
 		} catch (TransformerConfigurationException e) {
-			throw new KVException(new KVMessage("error", null, null, false, "Unknown error: Unable to initialize Transformer"));
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
 		}
 		
 		try {
 			t.transform(new StreamSource(new NoCloseInputStream(input)), new DOMResult(root));
 		} catch (TransformerException e) {
-			throw new KVException(new KVMessage("error", null, null, false, "XML Error: Received unparseable message"));
+			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
 		}
 		
 		msgType = root.getAttribute("type");
@@ -225,7 +225,7 @@ public class KVMessage {
 		try {
 			db = dbf.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			throw new KVException(new KVMessage("error", null, null, false, "Unknown error: Unable to initialize DocumentBuilder"));
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize DocumentBuilder"));
 		}
 		Document d = db.newDocument();
 		Element root = d.createElement("KVMessage");
@@ -251,14 +251,14 @@ public class KVMessage {
 		try {
 			t = tf.newTransformer();
 		} catch (TransformerConfigurationException e) {
-			throw new KVException(new KVMessage("error", null, null, false, "Unknown error: Unable to initialize Transformer"));
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
 		}
 		
 		StringWriter sw = new StringWriter();
 		try {
 			t.transform(new DOMSource(root), new StreamResult(sw));
 		} catch (TransformerException e) {
-			throw new KVException(new KVMessage("error", null, null, false, "Unknown error: Unable to generate XML"));
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to generate XML"));
 		}
 		return sw.toString();
 		
