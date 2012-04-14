@@ -62,7 +62,9 @@ public class SocketServer {
 	 */
 	public void run() throws IOException {
 		// implement me
-		this.handler.handle(clientSocket);
+		while (true){
+			this.handler.handle(clientSocket);
+		}
 	}
 	
 	/** 
