@@ -3,11 +3,10 @@ package edu.berkeley.cs162;
 import static org.junit.Assert.*;
 import java.io.Serializable;
 import org.junit.Test;
-import junit.framework.TestCase;
 
-public class ThreadPoolTest extends Testcase {
+public class ThreadPoolTest {
     
-    public void runTest() {
+    public static void runTest() {
 	ThreadPool test = new ThreadPool(10);
 	Runnable r = new Runnable() {
 		public void run() {
