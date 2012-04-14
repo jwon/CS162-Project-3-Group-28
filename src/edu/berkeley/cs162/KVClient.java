@@ -60,12 +60,12 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	public boolean put(K key, V value) throws KVException {
 		String keyAsString = KVMessage.marshall(key);
 		if (keyAsString.getBytes().length > 256){
-			throw new KVException(new KVMessage("Over sized key", null, null));
+			throw new KVException(new KVMessage("error", null, null, false, "Over sized key"));
 		}
 		
 		String valueAsString = KVMessage.marshall(value);
 		if(valueAsString.getBytes().length > 131072){
-			throw new KVException(new KVMessage("Over sized value", null, null));
+			throw new KVException(new KVMessage("error", null, null, false, "Over sized value"));
 		}
 		
 		Socket s = null;
@@ -73,9 +73,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		try{
 			s = new Socket(server, port);
 		} catch (UnknownHostException e){
-			throw new KVException(new KVMessage("Network Error: Could not create socket", keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error: Could not create socket"));
 		} catch (IOException e){
-			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
 		OutputStream os = null;
@@ -85,9 +85,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(IOException e){
 			try{
 				s.close();
-				throw new KVException(new KVMessage("Network Error: Could not send data", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error: Could not send data"));
 			} catch (IOException e2){
-				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
 
@@ -103,9 +103,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(SocketException e){
 			try{
 				s.close();
-				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error"));
 			} catch (IOException e2){
-				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
 
@@ -117,9 +117,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(IOException e){
 			try{
 				s.close();
-				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error"));
 			} catch (IOException e2){
-				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
 
@@ -129,14 +129,14 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		try{
 			s.close();
 		} catch(IOException e){
-			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
 		if(respMessage.getMessage().equals("Success")){
 			return respMessage.getStatus();
 		}
 		else{
-			throw new KVException(new KVMessage(respMessage.getMessage(), keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, respMessage.getMessage()));
 		}
 
 	}
@@ -146,7 +146,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	public V get(K key) throws KVException {
 		String keyAsString = KVMessage.marshall(key);
 		if (keyAsString.getBytes().length > 256){
-			throw new KVException(new KVMessage("Over sized key", null, null));
+			throw new KVException(new KVMessage("error", null, null, false, "Over sized key"));
 		}
 		
 		String valueAsString = null;
@@ -156,9 +156,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		try{
 			s = new Socket(server, port);
 		} catch (UnknownHostException e){
-			throw new KVException(new KVMessage("Network Error: Could not create socket", keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error: Could not create socket"));
 		} catch (IOException e){
-			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
 		OutputStream os = null;
@@ -168,9 +168,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(IOException e){
 			try{
 				s.close();
-				throw new KVException(new KVMessage("Network Error: Could not send data", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error: Could not send data"));
 			} catch (IOException e2){
-				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
 
@@ -186,9 +186,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(SocketException e){
 			try{
 				s.close();
-				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error"));
 			} catch (IOException e2){
-				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
 
@@ -200,9 +200,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(IOException e){
 			try{
 				s.close();
-				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error"));
 			} catch (IOException e2){
-				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
 
@@ -212,7 +212,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		try{
 			s.close();
 		} catch(IOException e){
-			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
 		if(respMessage.getMessage().equals("Success")){
@@ -220,13 +220,15 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			try{
 				value = (V) KVMessage.unmarshall(respMessage.getValue());
 			} catch (IOException e){
-				throw new KVException(new KVMessage("IO Error", keyAsString, respMessage.getValue()));
-			}
+				throw new KVException(new KVMessage("error", keyAsString, respMessage.getValue(), false, "IO Error"));
+			} catch (ClassNotFoundException e) {
+				throw new KVException(new KVMessage("error", keyAsString, respMessage.getValue(), false, "Unknown Error: class not found for value"));
+			} 
 
 			return value;
 		}
 		else{
-			throw new KVException(new KVMessage(respMessage.getMessage(), keyAsString, null));
+			throw new KVException(new KVMessage("error", keyAsString, null, false, respMessage.getMessage()));
 		}
 	}
 
@@ -234,7 +236,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	public void del(K key) throws KVException {
 		String keyAsString = KVMessage.marshall(key);
 		if (keyAsString.getBytes().length > 256){
-			throw new KVException(new KVMessage("Over sized key", null, null));
+			throw new KVException(new KVMessage("error", null, null, false, "Over sized key"));
 		}
 		
 		String valueAsString = null;
@@ -244,9 +246,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		try{
 			s = new Socket(server, port);
 		} catch (UnknownHostException e){
-			throw new KVException(new KVMessage("Network Error: Could not create socket", keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error: Could not create socket"));
 		} catch (IOException e){
-			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
 		OutputStream os = null;
@@ -256,9 +258,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(IOException e){
 			try{
 				s.close();
-				throw new KVException(new KVMessage("Network Error: Could not send data", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error: Could not send data"));
 			} catch (IOException e2){
-				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
 
@@ -274,9 +276,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(SocketException e){
 			try{
 				s.close();
-				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error"));
 			} catch (IOException e2){
-				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
 
@@ -288,9 +290,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(IOException e){
 			try{
 				s.close();
-				throw new KVException(new KVMessage("Network Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error"));
 			} catch (IOException e2){
-				throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
 
@@ -300,11 +302,11 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		try{
 			s.close();
 		} catch(IOException e){
-			throw new KVException(new KVMessage("IO Error", keyAsString, valueAsString));
+			throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
 		if(!respMessage.getMessage().equals("Success")){
-			throw new KVException(new KVMessage(respMessage.getMessage(), keyAsString, null));
+			throw new KVException(new KVMessage("error", keyAsString, null, false, respMessage.getMessage()));
 		}
 
 	}
