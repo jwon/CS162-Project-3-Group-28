@@ -105,19 +105,16 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			if(message.getMsgType() == "getreq") {
 				try {
 					String value = (String) keyserver.get((K)message.getKey());
-					response = new KVMessage("resp" , message.getKey(), value);
+					response = new KVMessage("resp" , message.getKey(), value,
+							false, "Success");
 					String xml = response.toXML();
 					pw.write(xml);
 				} catch (KVException e) {
-					try {
 						response = new KVMessage("resp", e.getMsg().getKey(), 
-								e.getMsg().getValue(), e.getMsg().getStatus(), "Error Message");
+								e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());
 						String xml = response.toXML();
 						pw.write(xml);
-					} catch (DataFormatException e1) {
-						e1.printStackTrace();
-					}
-				}
+				} 
 			} else if (message.getMsgType() == "putreq") {
 				 try {
 					boolean result = keyserver.put((K)message.getKey(), (V) message.getValue());
@@ -125,34 +122,23 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					String xml = response.toXML();
 					pw.write(xml);
 				} catch (KVException e) {
-					try {
-						response = new KVMessage("resp", e.getMsg().getKey(), 
-								e.getMsg().getValue(), e.getMsg().getStatus(), "Error Message");
-						String xml = response.toXML();
-						pw.write(xml);
-					} catch (DataFormatException e1) {
-						e1.printStackTrace();
-					}
-				} catch (DataFormatException e) {
-					e.printStackTrace();
+					response = new KVMessage("resp", e.getMsg().getKey(), 
+							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());
+					String xml = response.toXML();
+					pw.write(xml);
+
 				}
 			} else if (message.getMsgType() == "delreq") {
 				try {
 					keyserver.del((K)message.getKey());
-					response = new KVMessage("resp" , null, null, false, "Success");
+					response = new KVMessage("resp" , message.getKey() , null, false, "Success");
 					String xml = response.toXML();
 					pw.write(xml);
 				} catch (KVException e) {
-					try {
-						response = new KVMessage("resp", e.getMsg().getKey(), 
-								e.getMsg().getValue(), e.getMsg().getStatus(), "Error Message");
-						String xml = response.toXML();
-						pw.write(xml);
-					} catch (DataFormatException e1) {
-						e1.printStackTrace();
-					}
-				} catch (DataFormatException e) {
-					e.printStackTrace();
+					response = new KVMessage("resp", e.getMsg().getKey(), 
+							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());
+					String xml = response.toXML();
+					pw.write(xml);
 				}
 			}
 			
