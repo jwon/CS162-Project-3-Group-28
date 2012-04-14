@@ -78,21 +78,35 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	public V get (K key) throws KVException {
 		// implement me
 		String keyString = KVMessage.marshall(key);
+		byte[] size = keyString.getBytes();
+		if(size.length > 256)
+		throw new KVException(new KVMessage("resp", keyString, null, false, "Over sized key"));
+	    if (size.length == 0)
+		throw new KVException(new KVMessage("resp", keyString, null, false, "Empty key"));
+		
 		if(dataCache.get(key) != null){
 			return dataCache.get(key);
 		} else if (dataStore.get(key) != null) {
 			return dataStore.get(key);
 		} else {
-			throw new KVException(new KVMessage("Does not exist", keyString, null));
+			throw new KVException(new KVMessage("resp", keyString, null, false, "Does not exist"));
 		}
 	}
 
 	@Override
 	public void del(K key) throws KVException {
 		String keyString = KVMessage.marshall(key);
+		
+		byte[] size = keyString.getBytes();
+		if(size.length > 256)
+		throw new KVException(new KVMessage("resp", keyString, null, false, "Over sized key"));
+	    if (size.length == 0)
+		throw new KVException(new KVMessage("resp", keyString, null, false, "Empty key"));
+	    
 		if(dataCache.get(key) == null && dataStore.get(key) == null) {
-			throw new KVException(new KVMessage("Does not exist", keyString, null));
+			throw new KVException(new KVMessage("resp", keyString, null, false, "Does not exist"));			
 		}
+		
 		dataCache.del(key);
 		dataStore.del(key);
 	}
