@@ -54,8 +54,8 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	}
 	
 	public boolean put(K key, V value) throws KVException {
-	    String keyString = KVMessage.marshall(key);
-	    String valueString = KVMessage.marshall(value);
+	    String keyString = KVMessage.marshal(key);
+	    String valueString = KVMessage.marshal(value);
 	    byte[] size = (keyString).getBytes();
 	    if (size.length > 256)
 		throw new KVException(new KVMessage("resp", keyString, valueString, false, "Over sized key"));
@@ -77,7 +77,7 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	
 	public V get (K key) throws KVException {
 		// implement me
-		String keyString = KVMessage.marshall(key);
+		String keyString = KVMessage.marshal(key);
 		byte[] size = keyString.getBytes();
 		if(size.length > 256)
 		throw new KVException(new KVMessage("resp", keyString, null, false, "Over sized key"));
@@ -95,7 +95,7 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 
 	@Override
 	public void del(K key) throws KVException {
-		String keyString = KVMessage.marshall(key);
+		String keyString = KVMessage.marshal(key);
 		
 		byte[] size = keyString.getBytes();
 		if(size.length > 256)
