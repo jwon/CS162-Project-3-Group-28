@@ -221,7 +221,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 				value = (V) KVMessage.unmarshall(respMessage.getValue());
 			} catch (IOException e){
 				throw new KVException(new KVMessage("error", keyAsString, respMessage.getValue(), false, "IO Error"));
-			}
+			} catch (ClassNotFoundException e) {
+				throw new KVException(new KVMessage("error", keyAsString, respMessage.getValue(), false, "Unknown Error: class not found for value"));
+			} 
 
 			return value;
 		}
@@ -257,7 +259,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			try{
 				s.close();
 				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "Network Error: Could not send data"));
-			} catch (IOException e){
+			} catch (IOException e2){
 				throw new KVException(new KVMessage("error", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
