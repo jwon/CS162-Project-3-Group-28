@@ -3,10 +3,11 @@ package edu.berkeley.cs162;
 import static org.junit.Assert.*;
 import java.io.Serializable;
 import org.junit.Test;
+import junit.framework.TestCase;
 
-public class ThreadPoolTest {
-    @Test
-	public void runTest() {
+public class ThreadPoolTest extends Testcase {
+    
+    public void runTest() {
 	ThreadPool test = new ThreadPool(10);
 	Runnable r = new Runnable() {
 		public void run() {
@@ -42,5 +43,9 @@ public class ThreadPoolTest {
 	test.threads[1].run();
 	test.threads[2].run();
 	assertTrue(test.queueOfTasks.size() == 0);
+    }
+
+    public static void main(String args[]) {
+	runTest();
     }
 }
