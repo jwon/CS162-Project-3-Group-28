@@ -3,34 +3,54 @@ package edu.berkeley.cs162;
 import static org.junit.Assert.*;
 import java.io.Serializable;
 import org.junit.Test;
-import junit.framework.TestCase;
-import java.util.*;
 
-public class KeyServerTest extends TestCase {
-    
+public class KeyServerTest{
+
     public static void putTest() {
 	KeyServer test = new KeyServer(2);
-	K key = new K("key");
-	V value = new V("value");
-	assertTrue(test.put(key, value) == false);
-	assertTrue(test.put(key, value) == true);
+	try {
+	    assertTrue(test.put("key", "value") == false);
+	} catch (KVException e) {
+	    System.out.println(e);
+	}
+	try {
+	    assertTrue(test.put("key", "value") == true);
+	} catch (KVException e) {
+	    System.out.println(e);
+	}
     }
 
     public static void getTest() {
 	KeyServer test = new KeyServer(1);
-	K key = new K("key");
-	V value = new V("value");
-	test.put(key, value);
-	assertTrue(test.get(key) == value);
+	try {
+	    test.put("key", "value");
+	} catch (KVException e) {
+	    System.out.println(e);
+	}
+	try {
+	    assertTrue(test.get("key") == "value");
+	} catch (KVException e) {
+	    System.out.println(e);
+	}
     }
 
     public static void delTest() {
 	KeyServer test = new KeyServer(1);
-	K key = new K("key");
-	V value = new V("value");
-	test.put(key, value);
-	test.del(key);
-	assertTrue(test.put(key, value) == false);
+	try {
+	    test.put("key", "value");
+	} catch (KVException e) {
+	    System.out.println(e);
+	}
+	try {
+	    test.del("key");
+	} catch (KVException e) {
+	    System.out.println(e);
+	}
+	try {
+	    assertTrue(test.put("key", "value") == false);
+	} catch(KVException e) {
+	    System.out.println(e);
+	}
     }
 
     public static void main(String[] args) {
