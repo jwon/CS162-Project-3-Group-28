@@ -62,7 +62,6 @@ import org.w3c.dom.Text;
  * for communication between clients and servers. Data is stored in a 
  * marshalled String format in this object.
  */
-//@XmlRootElement
 public class KVMessage {
 	private String msgType = null;
 	private String key = null;
@@ -110,7 +109,6 @@ public class KVMessage {
 			oos.writeObject( o );
 			oos.close();
 		} catch (IOException e) {
-			// Shouldn't happen
 		}
         return new String( DatatypeConverter.printBase64Binary(baos.toByteArray()));
     }
@@ -127,24 +125,6 @@ public class KVMessage {
 	}
 	
 	public KVMessage(InputStream input) throws KVException{
-//		KVMessage dummy;
-//		try {
-//			JAXBContext jaxbContext = JAXBContext.newInstance(KVMessage.class);
-//			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-//			
-//			dummy = (KVMessage) jaxbUnmarshaller.unmarshal(new NoCloseInputStream(input));
-//		} catch (UnmarshalException e) {
-//			// XXX Not sure what to do here; should throw an exception and die at this point
-//			return;
-//		} catch (JAXBException e) {
-//			return;
-//		}
-//		
-//		this.msgType = dummy.msgType;
-//		this.key = dummy.key;
-//		this.value = dummy.value;
-//		this.status = dummy.status;
-//		this.message = dummy.message;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
@@ -190,34 +170,6 @@ public class KVMessage {
 	 * @return the XML String
 	 */
 	public String toXML() throws KVException {
-//		StringWriter sw = new StringWriter();
-//		JAXBContext jc;
-//		try {
-//			jc = JAXBContext.newInstance(this.getClass());
-//			
-// 
-//			
-//		} catch (JAXBException e) {
-//			System.out.println("newInstance exception");
-//			return "";
-//		}
-//		Marshaller jm; 
-//		try {
-//			jm = jc.createMarshaller();
-//		} catch (JAXBException e) {
-//			System.out.println("createMarshaller exception");
-//			return "";
-//		}
-//		try {
-//			jm.marshal(this, sw);
-//		} catch (JAXBException e) {
-//			System.out.println("marshal exception");
-//		}
-//		return sw.toString();
-		
-//		String ret = "";
-//		JAXB.marshal(this, ret);
-//		return ret;
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
@@ -264,7 +216,6 @@ public class KVMessage {
 		
 	}
 	
-	//@XmlElement
 	public void setMsgType(String msgType) {
 		this.msgType = msgType;
 	}
@@ -273,7 +224,6 @@ public class KVMessage {
 		return msgType;
 	}
 	
-	//@XmlElement
 	public void setKey(String key) {
 		this.key = key;
 	}
@@ -282,7 +232,6 @@ public class KVMessage {
 		return key;
 	}
 	
-	//@XmlElement
 	public void setValue(String value) {
 		this.value = value;
 	}
@@ -291,7 +240,6 @@ public class KVMessage {
 		return value;
 	}
 	
-	//@XmlElement
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
@@ -300,7 +248,6 @@ public class KVMessage {
 		return status;
 	}
 
-	//@XmlElement
 	public void setMessage(String message) {
 		this.message = message;
 	}
