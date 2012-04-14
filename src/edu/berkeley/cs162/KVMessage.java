@@ -47,11 +47,15 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 
 
 /**
@@ -123,25 +127,57 @@ public class KVMessage {
 	    public void close() {} // ignore close
 	}
 	
-	public KVMessage(InputStream input)  {
-		KVMessage dummy;
+	public KVMessage(InputStream input) throws KVException{
+//		KVMessage dummy;
+//		try {
+//			JAXBContext jaxbContext = JAXBContext.newInstance(KVMessage.class);
+//			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+//			
+//			dummy = (KVMessage) jaxbUnmarshaller.unmarshal(new NoCloseInputStream(input));
+//		} catch (UnmarshalException e) {
+//			// XXX Not sure what to do here; should throw an exception and die at this point
+//			return;
+//		} catch (JAXBException e) {
+//			return;
+//		}
+//		
+//		this.msgType = dummy.msgType;
+//		this.key = dummy.key;
+//		this.value = dummy.value;
+//		this.status = dummy.status;
+//		this.message = dummy.message;
+		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db;
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(KVMessage.class);
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			
-			dummy = (KVMessage) jaxbUnmarshaller.unmarshal(new NoCloseInputStream(input));
-		} catch (UnmarshalException e) {
-			// XXX Not sure what to do here; should throw an exception and die at this point
-			return;
-		} catch (JAXBException e) {
-			return;
+			db = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new KVException(new KVMessage("error", null, null, false, "Unknown error: Unable to initialize DocumentBuilder"));
 		}
 		
-		this.msgType = dummy.msgType;
-		this.key = dummy.key;
-		this.value = dummy.value;
-		this.status = dummy.status;
-		this.message = dummy.message;
+		Document d = db.newDocument();
+		Element root = d.createElement("KVMessage");
+		
+		TransformerFactory tf = TransformerFactory.newInstance();
+		Transformer t;
+		
+		try {
+			t = tf.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			throw new KVException(new KVMessage("error", null, null, false, "Unknown error: Unable to initialize Transformer"));
+		}
+		
+		try {
+			t.transform(new StreamSource(new NoCloseInputStream(input)), new DOMResult(root));
+		} catch (TransformerException e) {
+			throw new KVException(new KVMessage("error", null, null, false, "XML Error: Received unparseable message"));
+		}
+		
+		msgType = root.getAttribute("type");
+		key = ((Text)root.getElementsByTagName("Key").item(0).getFirstChild()).getWholeText();
+		value = ((Text)root.getElementsByTagName("Value").item(0).getFirstChild()).getWholeText();
+		status = Boolean.getBoolean(((Text)root.getElementsByTagName("Status").item(0).getFirstChild()).getWholeText());
+		message = ((Text)root.getElementsByTagName("Message").item(0).getFirstChild()).getWholeText();
 	}
 	
 	
