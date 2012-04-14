@@ -86,8 +86,8 @@ public class KVMessage {
 	// Will throw DataFormatException if either the key or value are too long.
 	public KVMessage(String msgType, Serializable key, Serializable value, boolean status, String message) {
 		this.msgType = msgType;
-		this.key = marshall(key);
-		this.value = marshall(value);
+		this.key = marshal(key);
+		this.value = marshal(value);
 		this.status = status;
 		this.message = message;
 		
@@ -95,7 +95,7 @@ public class KVMessage {
 	}
 	
 	/** Read the object from Base64 string. */
-    public static Object unmarshall(String s) throws IOException, ClassNotFoundException {
+    public static Object unmarshal(String s) throws IOException, ClassNotFoundException {
         byte [] data = DatatypeConverter.parseBase64Binary(s);
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         Object o  = ois.readObject();
@@ -104,7 +104,7 @@ public class KVMessage {
     }
 
     /** Write the object to a Base64 string. */
-    public static String marshall( Serializable o ) {
+    public static String marshal( Serializable o ) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
 			ObjectOutputStream oos = new ObjectOutputStream( baos );

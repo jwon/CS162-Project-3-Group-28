@@ -58,12 +58,12 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	
 	@Override
 	public boolean put(K key, V value) throws KVException {
-		String keyAsString = KVMessage.marshall(key);
+		String keyAsString = KVMessage.marshal(key);
 		if (keyAsString.getBytes().length > 256){
 			throw new KVException(new KVMessage("error", null, null, false, "Over sized key"));
 		}
 		
-		String valueAsString = KVMessage.marshall(value);
+		String valueAsString = KVMessage.marshal(value);
 		if(valueAsString.getBytes().length > 131072){
 			throw new KVException(new KVMessage("error", null, null, false, "Over sized value"));
 		}
@@ -144,7 +144,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public V get(K key) throws KVException {
-		String keyAsString = KVMessage.marshall(key);
+		String keyAsString = KVMessage.marshal(key);
 		if (keyAsString.getBytes().length > 256){
 			throw new KVException(new KVMessage("error", null, null, false, "Over sized key"));
 		}
@@ -218,7 +218,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		if(respMessage.getMessage().equals("Success")){
 			V value = null;
 			try{
-				value = (V) KVMessage.unmarshall(respMessage.getValue());
+				value = (V) KVMessage.unmarshal(respMessage.getValue());
 			} catch (IOException e){
 				throw new KVException(new KVMessage("error", keyAsString, respMessage.getValue(), false, "IO Error"));
 			} catch (ClassNotFoundException e) {
@@ -234,7 +234,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 
 	@Override
 	public void del(K key) throws KVException {
-		String keyAsString = KVMessage.marshall(key);
+		String keyAsString = KVMessage.marshal(key);
 		if (keyAsString.getBytes().length > 256){
 			throw new KVException(new KVMessage("error", null, null, false, "Over sized key"));
 		}
