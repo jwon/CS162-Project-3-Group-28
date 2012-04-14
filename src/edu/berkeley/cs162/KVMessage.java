@@ -29,9 +29,7 @@
  */
 package edu.berkeley.cs162;
 
-import java.util.*;
 import java.io.*;
-import java.util.zip.DataFormatException;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,16 +42,6 @@ import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.transform.TransformerFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 
 /**
