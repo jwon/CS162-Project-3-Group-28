@@ -31,9 +31,14 @@
 package edu.berkeley.cs162;
 
 
-import java.io.*;
-import java.net.*;
-import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
  * This class is used to communicate with (appropriately marshalling and unmarshalling) 
