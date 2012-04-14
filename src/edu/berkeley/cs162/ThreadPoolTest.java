@@ -5,8 +5,8 @@ import java.io.Serializable;
 import org.junit.Test;
 
 public class ThreadPoolTest {
-    @Test
-	public void runTest() {
+    
+    public static void runTest() {
 	ThreadPool test = new ThreadPool(10);
 	Runnable r = new Runnable() {
 		public void run() {
@@ -42,5 +42,9 @@ public class ThreadPoolTest {
 	test.threads[1].run();
 	test.threads[2].run();
 	assertTrue(test.queueOfTasks.size() == 0);
+    }
+
+    public static void main(String args[]) {
+	runTest();
     }
 }
