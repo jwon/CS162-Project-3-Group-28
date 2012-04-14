@@ -78,17 +78,14 @@ public class KVMessage {
 	// This constructor will handle the Serializable -> String marshalling,
 	// and should be the one actually used by KVClient.
 	// Will throw DataFormatException if either the key or value are too long.
-	public KVMessage(String msgType, Serializable key, Serializable value, boolean status, String message) throws DataFormatException{
+	public KVMessage(String msgType, Serializable key, Serializable value, boolean status, String message) {
 		this.msgType = msgType;
 		this.key = marshall(key);
 		this.value = marshall(value);
 		this.status = status;
 		this.message = message;
 		
-		if (this.key.length() > 256)
-			throw new DataFormatException("Over sized key");
-		if (this.value.length() > 128 << 10) // if value longer than 128KiB
-			throw new DataFormatException("Over sized value");
+		
 	}
 	
 	/** Read the object from Base64 string. */
