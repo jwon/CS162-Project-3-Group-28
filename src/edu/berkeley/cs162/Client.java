@@ -11,7 +11,7 @@ public class Client {
 		String value = "ROH";
 		
 		System.out.println("Binding Client:");
-		client = new KVClient<String, String>("localhost",8081);
+		client = new KVClient<String, String>("localhost",8080);
 		System.out.println("Starting Client");
 		client.put(key, value);
 		client.get(key);
