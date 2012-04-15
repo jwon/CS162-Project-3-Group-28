@@ -53,7 +53,6 @@ public class SocketServer {
 	public void connect() throws IOException {
 		// implement me
 		server = new ServerSocket(this.port);
-		clientSocket = server.accept();
 	}
 	
 	/**
@@ -63,6 +62,7 @@ public class SocketServer {
 	public void run() throws IOException {
 		// implement me
 		while (true){
+			clientSocket = server.accept();
 			this.handler.handle(clientSocket);
 		}
 	}
