@@ -7,11 +7,11 @@ public class Client {
 	static KVClient<String, String> client = null;
 	
 	public static void main(String[] args) throws IOException, KVException {
-		String key = "FOS";
-		String value = "ROH";
+		String key = "FUS";
+		String value = "RO";
 		
 		System.out.println("Binding Client:");
-		client = new KVClient<String, String>("107.21.152.247",8080);
+		client = new KVClient<String, String>("23.22.32.224",8080);
 		System.out.println("Starting Client");
 		client.put(key, value);
 		client.get(key);
