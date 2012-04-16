@@ -132,11 +132,15 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
+						System.print.println("Fail XML conversion");
+					}
+
+					try{
 						oos.writeObject(xml);
 						oos.flush();
+					} catch (IOException e){
+						System.out.println("IO Error");
 					}
-					oos.writeObject(xml);
-					oos.flush();
 				} 
 				
 			} else if (message.getMsgType() == "putreq") {
@@ -158,11 +162,15 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
+						System.print.println("Fail XML conversion");
+					}
+
+					try{
 						oos.writeObject(xml);
 						oos.flush();
+					} catch (IOException e){
+						System.out.println("IO Error");
 					}
-					oos.writeObject(xml);
-					oos.flush();
 				}
 				 
 			} else if (message.getMsgType() == "delreq") {
@@ -182,11 +190,15 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
+						System.print.println("Fail XML conversion");
+					}
+
+					try{
 						oos.writeObject(xml);
 						oos.flush();
+					} catch (IOException e){
+						System.out.println("IO Error");
 					}
-					oos.writeObject(xml);
-					oos.flush();
 				}
 			}
 			
