@@ -82,9 +82,8 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	 */
 	public boolean put (K key, V value) {
 		// implement me
-		updateLRUOrder(key);
-
 		V existing = cache.get(key);
+		updateLRUOrder(key);
 
 		synchronized(this){
 			cache.put(key, value);
