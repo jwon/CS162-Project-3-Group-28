@@ -61,8 +61,10 @@ public class ThreadPool {
 	public void addToQueue(Runnable r) throws InterruptedException
 	{
 		// implement me
-		queueOfTasks.add(r);
-		queueOfTasks.notify();
+		synchronized(queueOfTasks){
+			queueOfTasks.add(r);
+			queueOfTasks.notify();
+		}
 	}
 }
 
