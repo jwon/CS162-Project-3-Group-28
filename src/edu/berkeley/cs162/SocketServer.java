@@ -43,7 +43,6 @@ public class SocketServer {
 	int port;
 	KVClientHandler handler;
 	ServerSocket server;
-	Socket clientSocket;
 	
 	public SocketServer(String hostname, int port) {
 		this.hostname = hostname;
@@ -62,7 +61,7 @@ public class SocketServer {
 	public void run() throws IOException {
 		// implement me
 		while (true){
-			clientSocket = server.accept();
+			Socket clientSocket = server.accept();
 			this.handler.handle(clientSocket);
 		}
 	}
