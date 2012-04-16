@@ -11,9 +11,9 @@ public class KVMessageTest2 {
 	Value value = new Value("value");
 	String type = "putreq";
 	KVMessage msg = new KVMessage(type, KVMessage.marshal(key), KVMessage.marshal(value));
-	System.out.println("type: " + msg.getMsgType());
-	System.out.println("key: " + msg.getKey());
-	System.out.println("value: " + msg.getValue());
+	System.out.println("type: " + type);
+	System.out.println("key: " + key.toString());
+	System.out.println("value: " + value.toString());
 	System.out.println("status: " + msg.getStatus());
 	System.out.println("message: " + msg.getMessage());
 	try{
