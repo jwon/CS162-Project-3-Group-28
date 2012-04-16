@@ -54,6 +54,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.OutputKeys;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -248,8 +249,8 @@ public class KVMessage {
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
 		}
 		
-		trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		trans.setOutputProperty(OutputKeys.INDENT, "yes");
+		t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		t.setOutputProperty(OutputKeys.INDENT, "yes");
 		
 		StringWriter sw = new StringWriter();
 		try {
