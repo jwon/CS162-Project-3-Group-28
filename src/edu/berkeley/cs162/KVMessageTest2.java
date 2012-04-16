@@ -47,3 +47,5 @@ class Value implements Serializable{
 		return value2.toString().equals(this.toString());
 	}
 	public String value = null;
+
+}
