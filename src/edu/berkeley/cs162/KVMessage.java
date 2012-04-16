@@ -38,6 +38,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
@@ -54,6 +55,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 
@@ -111,7 +113,12 @@ public class KVMessage {
 			oos.close();
 		} catch (IOException e) {
 		}
-        return new String( DatatypeConverter.printBase64Binary(baos.toByteArray()));
+        
+        try {
+			return baos.toString("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			return "";
+		}
     }
 
 	
@@ -136,7 +143,7 @@ public class KVMessage {
 		}
 		
 		Document d = db.newDocument();
-		Element root = d.createElement("KVMessage");
+		//Element root = d.createElement("KVMessage");
 		
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer t;
@@ -148,16 +155,30 @@ public class KVMessage {
 		}
 		
 		try {
-			t.transform(new StreamSource(new NoCloseInputStream(input)), new DOMResult(root));
+			t.transform(new StreamSource(new NoCloseInputStream(input)), new DOMResult(d));
 		} catch (TransformerException e) {
 			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
 		}
 		
+		Element root = (Element)d.getFirstChild();
+		
 		msgType = root.getAttribute("type");
-		key = ((Text)root.getElementsByTagName("Key").item(0).getFirstChild()).getWholeText();
-		value = ((Text)root.getElementsByTagName("Value").item(0).getFirstChild()).getWholeText();
-		status = Boolean.getBoolean(((Text)root.getElementsByTagName("Status").item(0).getFirstChild()).getWholeText());
-		message = ((Text)root.getElementsByTagName("Message").item(0).getFirstChild()).getWholeText();
+		
+		Node keyElem = root.getElementsByTagName("Key").item(0);
+		if (keyElem != null) key = ((Text)keyElem.getFirstChild()).getWholeText();
+		
+		Node valueElem = root.getElementsByTagName("Value").item(0);
+		if (valueElem != null) value = ((Text)valueElem.getFirstChild()).getWholeText();
+		
+		Node statusElem = root.getElementsByTagName("Status").item(0);
+		if (statusElem != null) status = Boolean.getBoolean(((Text)statusElem.getFirstChild()).getWholeText());
+		
+		Node messageElem = root.getElementsByTagName("Message").item(0);
+		if (messageElem != null) message = ((Text)messageElem.getFirstChild()).getWholeText();
+		
+//		value = ((Text)root.getElementsByTagName("Value").item(0).getFirstChild()).getWholeText();
+//		status = Boolean.getBoolean(((Text)root.getElementsByTagName("Status").item(0).getFirstChild()).getWholeText());
+//		message = ((Text)root.getElementsByTagName("Message").item(0).getFirstChild()).getWholeText();
 	}
 	
 	
@@ -259,5 +280,9 @@ public class KVMessage {
 	
 	public String getMessage(){
 		return message;
+	}
+	
+	public String toString() {
+		return "{msgType = "+msgType+", key = "+key+", value ="+value+", status = "+status+", message = "+message+"}";
 	}
 }
