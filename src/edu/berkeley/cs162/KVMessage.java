@@ -98,10 +98,15 @@ public class KVMessage {
 	/** Read the object from Base64 string. */
     public static Object unmarshal(String s) throws IOException, ClassNotFoundException {
         byte [] data = DatatypeConverter.parseBase64Binary(s);
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+	ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        ObjectInputStream ois = null;
+
+	try{
+		ois = new ObjectInputStream(bais);
         Object o  = ois.readObject();
         ois.close();
         return o;
+	}
     }
 
     /** Write the object to a Base64 string. */
@@ -113,12 +118,8 @@ public class KVMessage {
 			oos.close();
 		} catch (IOException e) {
 		}
-        
-        try {
-			return baos.toString("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			return "";
-		}
+
+        return DatatypeConverter.printBase64Binary(baos.toByteArray());
     }
 
 	
@@ -133,6 +134,20 @@ public class KVMessage {
 	}
 	
 	public KVMessage(InputStream input) throws KVException{
+	
+		InputSource is = null;
+		
+		try {
+			ObjectInputStream in = new ObjectInputStream(input);
+			String xml = (String) in.readObject();
+			is = new InputSource();
+			is.setCharacterStream(new StringReader(xml));
+		}catch (IOException e1) {
+			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
+		}catch (ClassNotFoundException e) {
+			KVMessage err = new KVMessage("resp", "XML Error: Received unparseable message");
+			throw new KVException(err);
+		}
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
