@@ -95,8 +95,12 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				} catch (KVException e1) {
 					xml = "xml parsing error";
 				}
-				oos.writeObject(xml);
-				oos.flush();
+				try{
+						oos.writeObject(xml);
+						oos.flush();
+					} catch (IOException e){
+						System.out.println("IO Error");
+					}
 				s1.close();
 			}
 		}
@@ -132,7 +136,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
-						System.print.println("Fail XML conversion");
+						System.out.println("Fail XML conversion");
 					}
 
 					try{
@@ -162,7 +166,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
-						System.print.println("Fail XML conversion");
+						System.out.println("Fail XML conversion");
 					}
 
 					try{
@@ -190,7 +194,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
-						System.print.println("Fail XML conversion");
+						System.out.println("Fail XML conversion");
 					}
 
 					try{
