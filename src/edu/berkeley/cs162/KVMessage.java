@@ -98,7 +98,8 @@ public class KVMessage {
 	/** Read the object from Base64 string. */
     public static Object unmarshal(String s) throws IOException, ClassNotFoundException {
         byte [] data = DatatypeConverter.parseBase64Binary(s);
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+        //byte [] data = s.getBytes("UTF-8");
+    	ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         Object o  = ois.readObject();
         ois.close();
         return o;
@@ -114,11 +115,13 @@ public class KVMessage {
 		} catch (IOException e) {
 		}
         
-        try {
-			return baos.toString("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			return "";
-		}
+//        try {
+//			return baos.toString("UTF-8");
+//        	
+//		} catch (UnsupportedEncodingException e) {
+//			return "";
+//		}
+        return DatatypeConverter.printBase64Binary(baos.toByteArray());
     }
 
 	
@@ -165,10 +168,17 @@ public class KVMessage {
 		msgType = root.getAttribute("type");
 		
 		Node keyElem = root.getElementsByTagName("Key").item(0);
-		if (keyElem != null) key = ((Text)keyElem.getFirstChild()).getWholeText();
+		if (keyElem != null) {
+			key = ((Text)keyElem.getFirstChild()).getWholeText();
+//			key = key.substring(9,key.length() - 3);
+		}
+		
 		
 		Node valueElem = root.getElementsByTagName("Value").item(0);
-		if (valueElem != null) value = ((Text)valueElem.getFirstChild()).getWholeText();
+		if (valueElem != null) {
+			value = ((Text)valueElem.getFirstChild()).getWholeText();
+//			value = value.substring(9,key.length() - 3);
+		}
 		
 		Node statusElem = root.getElementsByTagName("Status").item(0);
 		if (statusElem != null) status = Boolean.getBoolean(((Text)statusElem.getFirstChild()).getWholeText());
@@ -232,12 +242,32 @@ public class KVMessage {
 		}
 		
 		StringWriter sw = new StringWriter();
+		//ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		String ret;
 		try {
+			//t.transform(new DOMSource(root), new StreamResult(baos));
 			t.transform(new DOMSource(root), new StreamResult(sw));
 		} catch (TransformerException e) {
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to generate XML"));
 		}
-		return sw.toString();
+		ret = sw.toString();
+//		try {
+//			ret = baos.toString("UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			return "";
+//		}
+		
+//		ret.replace("&", "&amp;");
+//		ret.replace("<", "&lt;");
+//		ret.replace(">", "&gt;");
+//		ret.replace("\"", "&quot;");
+//		ret.replace("'", "&apos;");
+		ret = ret.replace("<Key>", "<Key><![CDATA[");
+		ret = ret.replace("</Key>", "]]></Key>");
+		ret = ret.replace("<Value>", "<Value><![CDATA[");
+		ret = ret.replace("</Value>", "]]></Value>");
+		return ret;
+		//return baos.toString();
 		
 		
 	}
