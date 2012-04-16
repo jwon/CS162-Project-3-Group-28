@@ -7,12 +7,14 @@ import org.junit.Test;
 public class KVMessageTest2 {
     
     public static void runTest() {
-
-	    Key key = new Key("key");
-	    Value value = new Value("value");
-	    KVMessage msg = new KVMessage("putreq", KVMessage.marshal(key), KVMessage.marshal(value));
-
-	    System.out.println(msg.toXML());
+	Key key = new Key("key");
+	Value value = new Value("value");
+	KVMessage msg = new KVMessage("putreq", KVMessage.marshal(key), KVMessage.marshal(value));
+	try{
+		System.out.println(msg.toXML());
+    	} catch (KVException e){
+		System.out.println("Fail");
+	}
     }
 
     public static void main(String args[]) {
