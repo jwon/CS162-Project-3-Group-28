@@ -91,7 +91,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			oos = new ObjectOutputStream(s.getOutputStream());
 			oos.flush();
 			is = s.getInputStream();
-			ois = new ObjectInputStream(is));
+			ois = new ObjectInputStream(is);
 
 		} catch(IOException e){
 			try{
@@ -173,7 +173,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			oos = new ObjectOutputStream(s.getOutputStream());
 			oos.flush();
 			is = s.getInputStream();
-			ois = new ObjectInputStream(is));
+			ois = new ObjectInputStream(is);
 		} catch(IOException e){
 			try{
 				s.close();
@@ -259,7 +259,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			oos = new ObjectOutputStream(s.getOutputStream());
 			oos.flush();
 			is = s.getInputStream();
-			ois = new ObjectInputStream(is));
+			ois = new ObjectInputStream(is);
 		} catch(IOException e){
 			try{
 				s.close();
