@@ -92,6 +92,16 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		try{
 			oos = new ObjectOutputStream(s.getOutputStream());
 			oos.flush();
+		} catch(IOException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
+			} catch (IOException e2){
+				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
+			}
+		}
+		
+		try{
 			is = s.getInputStream();
 			ois = new ObjectInputStream(is);
 
