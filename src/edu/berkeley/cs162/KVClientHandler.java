@@ -66,16 +66,21 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 	@Override
 	public void handle(Socket client) throws IOException {
 		ConnectionHandler newTask = new ConnectionHandler(client);
-		try {
-			threadpool.addToQueue(newTask);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}		
+		if(newTask.failed == false){
+			try {
+				threadpool.addToQueue(newTask);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+			}		
+		} else {
+			System.out.println("xml parsing error");
+		}
 	}
 	
 	private class ConnectionHandler implements Runnable{
 		Socket s1;
 		KVMessage message;
+		public boolean failed = false;
 		
 		public ConnectionHandler(Socket client) throws IOException{
 			this.s1 = client;
@@ -102,6 +107,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						System.out.println("IO Error");
 					}
 				s1.close();
+				failed = true;
 			}
 		}
 		
