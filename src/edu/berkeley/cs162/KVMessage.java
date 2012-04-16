@@ -222,8 +222,8 @@ public class KVMessage {
 		d.appendChild(root);
 		if (key != null) {
 			Element keyNode = d.createElement("Key");
-			keyNode.appendChild(d.createTextNode(key));
 			root.appendChild(keyNode);
+			keyNode.appendChild(d.createTextNode(key));
 		}
 		if (value != null) {
 			Element valueNode = d.createElement("Value");
