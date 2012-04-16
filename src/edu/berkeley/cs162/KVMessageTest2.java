@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import java.io.Serializable;
 import org.junit.Test;
 
-public class KVMessageStringTest {
+public class KVMessageTest2 {
     
     public static void runTest() {
 
