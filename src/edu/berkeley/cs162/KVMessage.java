@@ -227,16 +227,17 @@ public class KVMessage {
 		}
 		if (value != null) {
 			Element valueNode = d.createElement("Value");
-			valueNode.appendChild(d.createTextNode(value));
 			root.appendChild(valueNode);
+			valueNode.appendChild(d.createTextNode(value));
 		}
 		Element statusNode = d.createElement("Status");
-		statusNode.appendChild(d.createTextNode(Boolean.toString(status)));
 		root.appendChild(statusNode);
+		statusNode.appendChild(d.createTextNode(Boolean.toString(status)));
+		
 		if (message != null) {
 			Element messageNode = d.createElement("Message");
-			messageNode.appendChild(d.createTextNode(message));
 			root.appendChild(messageNode);
+			messageNode.appendChild(d.createTextNode(message));
 		}
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer t;
@@ -247,9 +248,12 @@ public class KVMessage {
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
 		}
 		
+		trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		trans.setOutputProperty(OutputKeys.INDENT, "yes");
+		
 		StringWriter sw = new StringWriter();
 		try {
-			t.transform(new DOMSource(root), new StreamResult(sw));
+			t.transform(new DOMSource(d), new StreamResult(sw));
 		} catch (TransformerException e) {
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to generate XML"));
 		}
