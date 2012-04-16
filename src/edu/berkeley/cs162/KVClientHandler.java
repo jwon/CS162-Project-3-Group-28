@@ -98,7 +98,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				try{
 						oos.writeObject(xml);
 						oos.flush();
-					} catch (IOException e){
+					} catch (IOException e2){
 						System.out.println("IO Error");
 					}
 				s1.close();
