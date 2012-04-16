@@ -147,8 +147,7 @@ public class KVMessage {
 		}catch (IOException e1) {
 			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
 		}catch (ClassNotFoundException e) {
-			KVMessage err = new KVMessage("resp", "XML Error: Received unparseable message");
-			throw new KVException(err);
+			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
 		}
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
