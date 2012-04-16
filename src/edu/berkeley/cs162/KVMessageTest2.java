@@ -1,8 +1,6 @@
 package edu.berkeley.cs162;
 
-import static org.junit.Assert.*;
 import java.io.Serializable;
-import org.junit.Test;
 
 public class KVMessageTest2 {
     
