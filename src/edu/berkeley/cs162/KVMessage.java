@@ -83,6 +83,7 @@ public class KVMessage {
 	// and should be the one actually used by KVClient.
 	// Will throw DataFormatException if either the key or value are too long.
 	public KVMessage(String msgType, Serializable key, Serializable value, boolean status, String message) {
+		
 		this.msgType = msgType;
 		this.key = marshal(key);
 		this.value = marshal(value);
@@ -182,20 +183,24 @@ public class KVMessage {
 		Element root = d.createElement("KVMessage");
 		root.setAttribute("type", msgType);
 		d.appendChild(root);
-		Element keyNode = d.createElement("Key");
-		keyNode.appendChild(d.createTextNode(key));
-		root.appendChild(keyNode);
-		Element valueNode = d.createElement("Value");
-		valueNode.appendChild(d.createTextNode(value));
-		root.appendChild(valueNode);
+		if (key != null) {
+			Element keyNode = d.createElement("Key");
+			keyNode.appendChild(d.createTextNode(key));
+			root.appendChild(keyNode);
+		}
+		if (value != null) {
+			Element valueNode = d.createElement("Value");
+			valueNode.appendChild(d.createTextNode(value));
+			root.appendChild(valueNode);
+		}
 		Element statusNode = d.createElement("Status");
 		statusNode.appendChild(d.createTextNode(Boolean.toString(status)));
 		root.appendChild(statusNode);
-		Element messageNode = d.createElement("Message");
-		messageNode.appendChild(d.createTextNode(message));
-		root.appendChild(messageNode);
-		
-		
+		if (message != null) {
+			Element messageNode = d.createElement("Message");
+			messageNode.appendChild(d.createTextNode(message));
+			root.appendChild(messageNode);
+		}
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer t;
 		
