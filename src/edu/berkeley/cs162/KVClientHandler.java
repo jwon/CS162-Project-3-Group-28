@@ -31,8 +31,7 @@ package edu.berkeley.cs162;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.zip.DataFormatException;
@@ -85,8 +84,8 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			try {
 				message = new KVMessage(s1.getInputStream());
 			} catch (KVException e) {
-				OutputStream os = s1.getOutputStream();
-				PrintWriter pw = new PrintWriter(os);
+				ObjectOutputStream oos = new ObjectOutputStream(s1.getOutputStream());
+				oos.flush();
 				response.setMessage(e.getMsg().getMessage());
 				response.setKey(e.getMsg().getKey());
 				response.setValue(e.getMsg().getValue());
@@ -96,21 +95,22 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				} catch (KVException e1) {
 					xml = "xml parsing error";
 				}
-				pw.write(xml);
+				oos.writeObject(xml);
+				oos.flush();
 				s1.close();
 			}
 		}
 		
 		public void run() {
-			OutputStream os = null;
+			ObjectOutputStream oos = null;
 			try {
-				os = s1.getOutputStream();
+				oos = new ObjectOutputStream(s1.getOutputStream());
+				oos.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
 			
-			PrintWriter pw = new PrintWriter(os);
 			KVMessage response = null;
 			String xml = "xml parsing error";
 			if(message.getMsgType() == "getreq") {
@@ -132,9 +132,11 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
-						pw.write(xml);
+						oos.writeObject(xml);
+						oos.flush();
 					}
-					pw.write(xml);
+					oos.writeObject(xml);
+					oos.flush();
 				} 
 				
 			} else if (message.getMsgType() == "putreq") {
@@ -156,9 +158,11 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
-						pw.write(xml);
+						oos.writeObject(xml);
+						oos.flush();
 					}
-					pw.write(xml);
+					oos.writeObject(xml);
+					oos.flush();
 				}
 				 
 			} else if (message.getMsgType() == "delreq") {
@@ -178,9 +182,11 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
-						pw.write(xml);
+						oos.writeObject(xml);
+						oos.flush();
 					}
-					pw.write(xml);
+					oos.writeObject(xml);
+					oos.flush();
 				}
 			}
 			
