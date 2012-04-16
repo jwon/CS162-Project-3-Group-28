@@ -29,19 +29,32 @@
  */
 package edu.berkeley.cs162;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.io.StringWriter;
 
 import javax.xml.bind.DatatypeConverter;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.UnmarshalException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 
 /**
@@ -49,14 +62,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  * for communication between clients and servers. Data is stored in a 
  * marshalled String format in this object.
  */
-@XmlRootElement
 public class KVMessage {
 	private String msgType = null;
 	private String key = null;
 	private String value = null;
 	private boolean status = false;
-	private String message = null;
+	private String message = "blah blah blah";
 
+	public KVMessage() {
+		
+	}
+	
 	public KVMessage(String msgType, String key, String value) {
 		this.msgType = msgType;
 		this.key = key;
@@ -68,8 +84,8 @@ public class KVMessage {
 	// Will throw DataFormatException if either the key or value are too long.
 	public KVMessage(String msgType, Serializable key, Serializable value, boolean status, String message) {
 		this.msgType = msgType;
-		this.key = marshall(key);
-		this.value = marshall(value);
+		this.key = marshal(key);
+		this.value = marshal(value);
 		this.status = status;
 		this.message = message;
 		
@@ -77,7 +93,7 @@ public class KVMessage {
 	}
 	
 	/** Read the object from Base64 string. */
-    public static Object unmarshall(String s) throws IOException, ClassNotFoundException {
+    public static Object unmarshal(String s) throws IOException, ClassNotFoundException {
         byte [] data = DatatypeConverter.parseBase64Binary(s);
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         Object o  = ois.readObject();
@@ -86,14 +102,13 @@ public class KVMessage {
     }
 
     /** Write the object to a Base64 string. */
-    public static String marshall( Serializable o ) {
+    public static String marshal( Serializable o ) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
 			ObjectOutputStream oos = new ObjectOutputStream( baos );
 			oos.writeObject( o );
 			oos.close();
 		} catch (IOException e) {
-			// Shouldn't happen
 		}
         return new String( DatatypeConverter.printBase64Binary(baos.toByteArray()));
     }
@@ -109,25 +124,39 @@ public class KVMessage {
 	    public void close() {} // ignore close
 	}
 	
-	public KVMessage(InputStream input)  {
-		KVMessage dummy;
+	public KVMessage(InputStream input) throws KVException{
+		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db;
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(KVMessage.class);
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			
-			dummy = (KVMessage) jaxbUnmarshaller.unmarshal(new NoCloseInputStream(input));
-		} catch (UnmarshalException e) {
-			// XXX Not sure what to do here; should throw an exception and die at this point
-			return;
-		} catch (JAXBException e) {
-			return;
+			db = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize DocumentBuilder"));
 		}
 		
-		this.msgType = dummy.msgType;
-		this.key = dummy.key;
-		this.value = dummy.value;
-		this.status = dummy.status;
-		this.message = dummy.message;
+		Document d = db.newDocument();
+		Element root = d.createElement("KVMessage");
+		
+		TransformerFactory tf = TransformerFactory.newInstance();
+		Transformer t;
+		
+		try {
+			t = tf.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
+		}
+		
+		try {
+			t.transform(new StreamSource(new NoCloseInputStream(input)), new DOMResult(root));
+		} catch (TransformerException e) {
+			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
+		}
+		
+		msgType = root.getAttribute("type");
+		key = ((Text)root.getElementsByTagName("Key").item(0).getFirstChild()).getWholeText();
+		value = ((Text)root.getElementsByTagName("Value").item(0).getFirstChild()).getWholeText();
+		status = Boolean.getBoolean(((Text)root.getElementsByTagName("Status").item(0).getFirstChild()).getWholeText());
+		message = ((Text)root.getElementsByTagName("Message").item(0).getFirstChild()).getWholeText();
 	}
 	
 	
@@ -140,21 +169,53 @@ public class KVMessage {
 	 * Generate the XML representation for this message.
 	 * @return the XML String
 	 */
-	public String toXML() {
-		StringWriter sw = new StringWriter();
+	public String toXML() throws KVException {
+		
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db;
+		try {
+			db = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize DocumentBuilder"));
+		}
+		Document d = db.newDocument();
+		Element root = d.createElement("KVMessage");
+		root.setAttribute("type", msgType);
+		d.appendChild(root);
+		Element keyNode = d.createElement("Key");
+		keyNode.appendChild(d.createTextNode(key));
+		root.appendChild(keyNode);
+		Element valueNode = d.createElement("Value");
+		valueNode.appendChild(d.createTextNode(value));
+		root.appendChild(valueNode);
+		Element statusNode = d.createElement("Status");
+		statusNode.appendChild(d.createTextNode(Boolean.toString(status)));
+		root.appendChild(statusNode);
+		Element messageNode = d.createElement("Message");
+		messageNode.appendChild(d.createTextNode(message));
+		root.appendChild(messageNode);
+		
+		
+		TransformerFactory tf = TransformerFactory.newInstance();
+		Transformer t;
 		
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(KVMessage.class);
-			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
- 
-			jaxbMarshaller.marshal(this, sw);
-		} catch (JAXBException e) {
-			
+			t = tf.newTransformer();
+		} catch (TransformerConfigurationException e) {
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
+		}
+		
+		StringWriter sw = new StringWriter();
+		try {
+			t.transform(new DOMSource(root), new StreamResult(sw));
+		} catch (TransformerException e) {
+			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to generate XML"));
 		}
 		return sw.toString();
+		
+		
 	}
 	
-	@XmlElement
 	public void setMsgType(String msgType) {
 		this.msgType = msgType;
 	}
@@ -163,7 +224,6 @@ public class KVMessage {
 		return msgType;
 	}
 	
-	@XmlElement
 	public void setKey(String key) {
 		this.key = key;
 	}
@@ -172,7 +232,6 @@ public class KVMessage {
 		return key;
 	}
 	
-	@XmlElement
 	public void setValue(String value) {
 		this.value = value;
 	}
@@ -181,7 +240,6 @@ public class KVMessage {
 		return value;
 	}
 	
-	@XmlElement
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
@@ -190,7 +248,6 @@ public class KVMessage {
 		return status;
 	}
 
-	@XmlElement
 	public void setMessage(String message) {
 		this.message = message;
 	}
