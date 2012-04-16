@@ -101,12 +101,10 @@ public class KVMessage {
 	ByteArrayInputStream bais = new ByteArrayInputStream(data);
         ObjectInputStream ois = null;
 
-	try{
-		ois = new ObjectInputStream(bais);
+	ois = new ObjectInputStream(bais);
         Object o  = ois.readObject();
         ois.close();
         return o;
-	}
     }
 
     /** Write the object to a Base64 string. */
