@@ -241,21 +241,21 @@ public class KVMessage {
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
 		}
 		
-		StringWriter sw = new StringWriter();
-		//ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		//StringWriter sw = new StringWriter();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String ret;
 		try {
-			//t.transform(new DOMSource(root), new StreamResult(baos));
-			t.transform(new DOMSource(root), new StreamResult(sw));
+			t.transform(new DOMSource(root), new StreamResult(baos));
+			//t.transform(new DOMSource(root), new StreamResult(sw));
 		} catch (TransformerException e) {
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to generate XML"));
 		}
-		ret = sw.toString();
-//		try {
-//			ret = baos.toString("UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			return "";
-//		}
+		//ret = sw.toString();
+		try {
+			ret = baos.toString("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			return "";
+		}
 		
 //		ret.replace("&", "&amp;");
 //		ret.replace("<", "&lt;");
