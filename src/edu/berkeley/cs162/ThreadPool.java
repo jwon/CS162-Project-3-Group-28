@@ -49,6 +49,7 @@ public class ThreadPool {
 		threads = new Thread[size];
 		for(int i = 0; i < size; i++){
 			threads[i] = new WorkerThread(this);
+			threads[i].start();
 		}
 	}
 
@@ -61,8 +62,10 @@ public class ThreadPool {
 	public void addToQueue(Runnable r) throws InterruptedException
 	{
 		// implement me
-		queueOfTasks.add(r);
-		queueOfTasks.notify();
+		synchronized(queueOfTasks){
+			queueOfTasks.add(r);
+			queueOfTasks.notify();
+		}
 	}
 }
 

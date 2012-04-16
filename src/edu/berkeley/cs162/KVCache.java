@@ -42,7 +42,6 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	private int cacheSize;
 	private HashMap<K,V> cache;
 	private LinkedList<K> order;
-	Lock accessLock;
 
 	/**
 	 * Creates a new LRU cache.
@@ -82,15 +81,16 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	 */
 	public boolean put (K key, V value) {
 		// implement me
+		V existing = cache.get(key);
 		updateLRUOrder(key);
 
-		V existing = cache.get(key);
-
-		synchronized(this){
+		synchronized(cache){
 			cache.put(key, value);
 			while(cache.size()>cacheSize){
-				K toRemove = order.remove();
-				cache.remove(toRemove);
+				synchronized(order){
+					K toRemove = order.remove();
+					cache.remove(toRemove);
+				}
 			}
 		}
 
@@ -101,7 +101,7 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	}
 
 	private void updateLRUOrder(K key){
-		synchronized(this){
+		synchronized(order){
 			order.remove(key);
 			order.add(key);
 		}

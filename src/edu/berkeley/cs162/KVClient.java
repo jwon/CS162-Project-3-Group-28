@@ -34,6 +34,8 @@ package edu.berkeley.cs162;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.Socket;
@@ -83,10 +85,26 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
-		OutputStream os = null;
+		ObjectOutputStream oos = null;
+		InputStream is = null;
+		ObjectInputStream ois = null;
 		
 		try{
-			os = s.getOutputStream();
+			oos = new ObjectOutputStream(s.getOutputStream());
+			oos.flush();
+		} catch(IOException e){
+			try{
+				s.close();
+				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
+			} catch (IOException e2){
+				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
+			}
+		}
+		
+		try{
+			is = s.getInputStream();
+			ois = new ObjectInputStream(is);
+
 		} catch(IOException e){
 			try{
 				s.close();
@@ -96,12 +114,16 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			}
 		}
 
-
 		
-		PrintWriter pw = new PrintWriter(os);
 		KVMessage reqMessage = new KVMessage("putreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
-		pw.write(xml);
+
+		try{
+			oos.writeObject(xml);
+			oos.flush();
+		} catch (IOException e){
+			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
+		}
 		
 		try{
 			s.setSoTimeout(10000);
@@ -115,24 +137,13 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 
 		
-		InputStream is = null;
-		
-		try{
-			is = s.getInputStream();
-		} catch(IOException e){
-			try{
-				s.close();
-				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error"));
-			} catch (IOException e2){
-				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
-			}
-		}
-
-		
 		KVMessage respMessage = new KVMessage(is);
 		
 		try{
 			s.close();
+			oos.close();
+			ois.close();
+
 		} catch(IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
@@ -166,10 +177,15 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
-		OutputStream os = null;
+		ObjectOutputStream oos = null;
+		InputStream is = null;
+		ObjectInputStream ois = null;
 		
 		try{
-			os = s.getOutputStream();
+			oos = new ObjectOutputStream(s.getOutputStream());
+			oos.flush();
+			is = s.getInputStream();
+			ois = new ObjectInputStream(is);
 		} catch(IOException e){
 			try{
 				s.close();
@@ -180,11 +196,15 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 
 
-		
-		PrintWriter pw = new PrintWriter(os);
 		KVMessage reqMessage = new KVMessage("getreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
-		pw.write(xml);
+
+		try{
+			oos.writeObject(xml);
+			oos.flush();
+		} catch (IOException e){
+			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
+		}
 		
 		try{
 			s.setSoTimeout(10000);
@@ -197,25 +217,12 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			}
 		}
 
-		
-		InputStream is = null;
-		
-		try{
-			is = s.getInputStream();
-		} catch(IOException e){
-			try{
-				s.close();
-				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error"));
-			} catch (IOException e2){
-				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
-			}
-		}
-
-		
 		KVMessage respMessage = new KVMessage(is);
 		
 		try{
 			s.close();
+			oos.close();
+			ois.close();
 		} catch(IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
@@ -256,10 +263,15 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
-		OutputStream os = null;
+		ObjectOutputStream oos = null;
+		InputStream is = null;
+		ObjectInputStream ois = null;
 		
 		try{
-			os = s.getOutputStream();
+			oos = new ObjectOutputStream(s.getOutputStream());
+			oos.flush();
+			is = s.getInputStream();
+			ois = new ObjectInputStream(is);
 		} catch(IOException e){
 			try{
 				s.close();
@@ -271,10 +283,15 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 
 
 		
-		PrintWriter pw = new PrintWriter(os);
 		KVMessage reqMessage = new KVMessage("delreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
-		pw.write(xml);
+
+		try{
+			oos.writeObject(xml);
+			oos.flush();
+		} catch (IOException e){
+			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
+		}
 		
 		try{
 			s.setSoTimeout(10000);
@@ -286,26 +303,13 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 			}
 		}
-
-		
-		InputStream is = null;
-		
-		try{
-			is = s.getInputStream();
-		} catch(IOException e){
-			try{
-				s.close();
-				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error"));
-			} catch (IOException e2){
-				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
-			}
-		}
-
 		
 		KVMessage respMessage = new KVMessage(is);
 		
 		try{
 			s.close();
+			oos.close();
+			ois.close();
 		} catch(IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
