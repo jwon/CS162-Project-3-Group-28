@@ -101,7 +101,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				try {
 					xml = response.toXML();
 				} catch (KVException e1) {
-					System.out.println(e1.getMsg().getMessage());
+					//System.out.println(e1.getMsg().getMessage());
 					xml = "xml parsing error line 104";
 				}
 				try{
