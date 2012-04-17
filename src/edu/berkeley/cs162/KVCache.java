@@ -49,7 +49,7 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	 */
 	public KVCache (int cacheSize) {
 		// implement me
-		cache = new LinkedHashMap<K, V>(cacheSize);
+		cache = new HashMap<K, V>(cacheSize);
 		order = new LinkedList<K>();
 		this.cacheSize = cacheSize;
 	}
