@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.zip.DataFormatException;
 
 /**
@@ -68,6 +70,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 	 */
 	@Override
 	public void handle(Socket client) throws IOException {
+		System.out.println("handle called");
 		ConnectionHandler newTask = new ConnectionHandler(client);
 		if(newTask.failed == false){
 			try {
@@ -86,9 +89,11 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 		public boolean failed = false;
 		
 		public ConnectionHandler(Socket client) throws IOException{
+			System.out.println("ConnectionHandler constructor called");
 			this.s1 = client;
 			KVMessage response = new KVMessage("resp", null, null);
 			String xml = null;
+			
 			try {
 				message = new KVMessage(s1.getInputStream());
 			} catch (KVException e) {
@@ -115,9 +120,11 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				s1.close();
 				failed = true;
 			}
+			System.out.println("message successfully parsed");
 		}
 		
 		public void run() {
+			System.out.println("run called");
 			FilterOutputStream fos = null;
 			try {
 				fos = new FilterOutputStream(s1.getOutputStream());
