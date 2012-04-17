@@ -162,7 +162,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try{
 						fos.write(xmlBytes);
 						fos.flush();
-						fos.close();
 					} catch (IOException e){
 						System.out.println("IO Error");
 					}
@@ -193,7 +192,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try{
 						fos.write(xmlBytes);
 						fos.flush();
-						fos.close();
 					} catch (IOException e){
 						System.out.println("IO Error");
 					}
@@ -222,7 +220,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try{
 						fos.write(xmlBytes);
 						fos.flush();
-						fos.close();
 					} catch (IOException e){
 						System.out.println("IO Error");
 					}
