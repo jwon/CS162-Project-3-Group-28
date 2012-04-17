@@ -29,6 +29,8 @@
  */
 package edu.berkeley.cs162;
 
+
+
 import java.io.DataOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -92,6 +94,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			} catch (KVException e) {
 				FilterOutputStream fos = new FilterOutputStream(s1.getOutputStream());
 				fos.flush();
+				System.out.println("KVException caught line 94");
 				response.setMessage(e.getMsg().getMessage());
 				response.setKey(e.getMsg().getKey());
 				response.setValue(e.getMsg().getValue());
@@ -99,14 +102,15 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				try {
 					xml = response.toXML();
 				} catch (KVException e1) {
-					xml = "xml parsing error";
+					//System.out.println(e1.getMsg().getMessage());
+					xml = "xml parsing error line 104";
 				}
 				byte[] xmlBytes = xml.getBytes();
 				try{
 						fos.write(xmlBytes);
 						fos.flush();
 					} catch (IOException e2){
-						System.out.println("IO Error");
+						System.out.println("IO Error line 111");
 					}
 				s1.close();
 				failed = true;
@@ -124,7 +128,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			
 			
 			KVMessage response = null;
-			String xml = "xml parsing error";
+			String xml = "xml parsing error line 129";
 			if(message.getMsgType() == "getreq") {
 				try {
 					String value = KVMessage.marshal(keyserver.get(
