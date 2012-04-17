@@ -73,6 +73,8 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	    boolean store = dataStore.put(key,value);
 	    boolean cache = dataCache.put(key,value);
 		
+		System.out.println("dataStore.get: " + dataStore.get(key,value));
+		
 		System.out.println("store: " + store);
 		System.out.println("cache: " + cache);
 		

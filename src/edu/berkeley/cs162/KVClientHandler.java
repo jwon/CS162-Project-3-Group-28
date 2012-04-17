@@ -179,12 +179,12 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				
 			} else if (message.getMsgType().equals("putreq")) {
 				 try {
-					System.out.println("message.getKey(): " + message.getKey());
+					//System.out.println("message.getKey(): " + message.getKey());
 					K k1 = (K) KVMessage.unmarshal(message.getKey());
-					System.out.println("k1: " + k1);
-					System.out.println("message.getValue(): " + message.getValue());
+					//System.out.println("k1: " + k1);
+					//System.out.println("message.getValue(): " + message.getValue());
 					V v1 = (V) KVMessage.unmarshal(message.getValue());
-					System.out.println("v1: " + v1);
+					//System.out.println("v1: " + v1);
 					boolean result = keyserver.put(k1,v1);
 					response = new KVMessage("resp" , null, null, result, "Success");
 					
