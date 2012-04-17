@@ -141,6 +141,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch(SocketException e){
 			try{
 				s.close();
+				System.out.println(e);
 				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error"));
 			} catch (IOException e2){
 				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
