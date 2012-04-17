@@ -51,15 +51,24 @@ public class KVClientTest {
 
 		/** Not sure about behavior of put */
 		//Test put
-		
+		System.out.println("Testing PUT");
 		if(kvc.put(k1, v1)){
-			System.out.println("Yay! put worked!");
+			System.out.println("PUT succeeded. Value overwritten.");
 		}
 		else{
-			System.out.println("No, put failed...");
+			System.out.println("PUT succeeded with empty key or PUT FAILED");
+		}
+		
+		System.out.println("Testing PUT #2");
+		if(kvc.put(k1, v1)){
+			System.out.println("PUT succeeded. Value overwritten.");
+		}
+		else{
+			System.out.println("PUT succeeded with empty key or PUT FAILED");
 		}
 
 		//Test get
+		System.out.println("Testing GET");
 		if(v1.equals(kvc.get(k1))){
 			System.out.println("Yay! get worked!");
 		}
@@ -68,6 +77,7 @@ public class KVClientTest {
 		}
 
 		//Test del, get
+		System.out.println("Testing DEL");
 		kvc.del(k1);
 		boolean test = true;
 		try{
@@ -85,14 +95,14 @@ public class KVClientTest {
 	}
 	
 	public static void main(String args[]) {
-		try{
+		/*try{
 			testConversion();
 		} catch(IOException e){
 			System.out.println("IO Exception");
 		} catch(ClassNotFoundException e2){
 			System.out.println("ClassNotFound Exception");
 		}
-		
+		*/
 		try{
 			testPutGetDel();
 		} catch(IOException e){
