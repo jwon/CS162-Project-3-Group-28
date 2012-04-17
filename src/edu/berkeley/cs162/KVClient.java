@@ -131,7 +131,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		try{
-			s.setSoTimeout(10000);
+			s.setSoTimeout(60000);
 		} catch(SocketException e){
 			try{
 				s.close();
@@ -210,7 +210,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		try{
-			s.setSoTimeout(10000);
+			s.setSoTimeout(60000);
 		} catch(SocketException e){
 			try{
 				s.close();
@@ -295,7 +295,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		try{
-			s.setSoTimeout(10000);
+			s.setSoTimeout(60000);
 		} catch(SocketException e){
 			try{
 				s.close();
