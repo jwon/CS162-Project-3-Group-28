@@ -72,6 +72,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 	public void handle(Socket client) throws IOException {
 		System.out.println("handle called");
 		ConnectionHandler newTask = new ConnectionHandler(client);
+		System.out.println("Time to add to ThreadPool");
 		if(newTask.failed == false){
 			try {
 				threadpool.addToQueue(newTask);
@@ -110,8 +111,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					//System.out.println(e1.getMsg().getMessage());
 					xml = "xml parsing error line 104";
 				}
-				
-				System.out.println("RESPONSE XML: " + xml);
 				
 				byte[] xmlBytes = xml.getBytes();
 				try{
