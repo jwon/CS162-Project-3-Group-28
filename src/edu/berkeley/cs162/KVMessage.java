@@ -237,7 +237,7 @@ public class KVMessage {
 		root.appendChild(statusNode);
 		if (message != null) {
 			Element messageNode = d.createElement("Message");
-			messageNode.appendChild(d.createTextNode(message));
+			messageNode.appendChild(d.createCDATASection(message));
 			root.appendChild(messageNode);
 		}
 		TransformerFactory tf = TransformerFactory.newInstance();
