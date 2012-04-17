@@ -7,7 +7,7 @@ import org.junit.Test;
 public class KeyServerTest{
 
     public static void putTest() {
-	KeyServer test = new KeyServer(2);
+	KeyServer test = new KeyServer(1);
 	try {
 	    System.out.println(test.put("key", "value"));
 	} catch (KVException e) {
