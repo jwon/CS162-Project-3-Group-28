@@ -31,6 +31,8 @@
 package edu.berkeley.cs162;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -85,13 +87,16 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
-		ObjectOutputStream oos = null;
+		//ObjectOutputStream oos = null;
 		InputStream is = null;
-		ObjectInputStream ois = null;
+		
+		FilterOutputStream fos = null;
 		
 		try{
-			oos = new ObjectOutputStream(s.getOutputStream());
-			oos.flush();
+//			oos = new ObjectOutputStream(s.getOutputStream());
+//			oos.flush();
+			fos = new FilterOutputStream(s.getOutputStream());
+			fos.flush();
 		} catch(IOException e){
 			try{
 				s.close();
@@ -103,7 +108,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		try{
 			is = s.getInputStream();
-			ois = new ObjectInputStream(is);
 
 		} catch(IOException e){
 			try{
@@ -119,8 +123,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		String xml = reqMessage.toXML();
 
 		try{
-			oos.writeObject(xml);
-			oos.flush();
+			byte [] xmlBytes = xml.getBytes();
+			fos.write(xmlBytes);
+			fos.flush();
 		} catch (IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
 		}
@@ -141,8 +146,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		try{
 			s.close();
-			oos.close();
-			ois.close();
+			fos.close();
 
 		} catch(IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
@@ -177,15 +181,13 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
-		ObjectOutputStream oos = null;
+		FilterOutputStream fos = null;
 		InputStream is = null;
-		ObjectInputStream ois = null;
 		
 		try{
-			oos = new ObjectOutputStream(s.getOutputStream());
-			oos.flush();
+			fos = new FilterOutputStream(s.getOutputStream());
+			fos.flush();
 			is = s.getInputStream();
-			ois = new ObjectInputStream(is);
 		} catch(IOException e){
 			try{
 				s.close();
@@ -198,10 +200,11 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 
 		KVMessage reqMessage = new KVMessage("getreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
+		byte [] xmlBytes = xml.getBytes();
 
 		try{
-			oos.writeObject(xml);
-			oos.flush();
+			fos.write(xmlBytes);
+			fos.flush();
 		} catch (IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
 		}
@@ -221,8 +224,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		try{
 			s.close();
-			oos.close();
-			ois.close();
+			fos.close();
 		} catch(IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
@@ -263,15 +265,13 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
 		
-		ObjectOutputStream oos = null;
+		FilterOutputStream fos = null;
 		InputStream is = null;
-		ObjectInputStream ois = null;
 		
 		try{
-			oos = new ObjectOutputStream(s.getOutputStream());
-			oos.flush();
+			fos = new FilterOutputStream(s.getOutputStream());
+			fos.flush();
 			is = s.getInputStream();
-			ois = new ObjectInputStream(is);
 		} catch(IOException e){
 			try{
 				s.close();
@@ -285,10 +285,11 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		KVMessage reqMessage = new KVMessage("delreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
+		byte[] xmlBytes = xml.getBytes();
 
 		try{
-			oos.writeObject(xml);
-			oos.flush();
+			fos.write(xmlBytes);
+			fos.flush();
 		} catch (IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
 		}
@@ -308,8 +309,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		try{
 			s.close();
-			oos.close();
-			ois.close();
+			fos.close();
 		} catch(IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}

@@ -29,11 +29,16 @@
  */
 package edu.berkeley.cs162;
 
+
+
 import java.io.DataOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.zip.DataFormatException;
 
 /**
@@ -65,6 +70,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 	 */
 	@Override
 	public void handle(Socket client) throws IOException {
+		System.out.println("handle called");
 		ConnectionHandler newTask = new ConnectionHandler(client);
 		if(newTask.failed == false){
 			try {
@@ -83,14 +89,17 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 		public boolean failed = false;
 		
 		public ConnectionHandler(Socket client) throws IOException{
+			System.out.println("ConnectionHandler constructor called");
 			this.s1 = client;
 			KVMessage response = new KVMessage("resp", null, null);
 			String xml = null;
+			
 			try {
 				message = new KVMessage(s1.getInputStream());
 			} catch (KVException e) {
-				ObjectOutputStream oos = new ObjectOutputStream(s1.getOutputStream());
-				oos.flush();
+				FilterOutputStream fos = new FilterOutputStream(s1.getOutputStream());
+				fos.flush();
+				System.out.println("KVException caught line 94");
 				response.setMessage(e.getMsg().getMessage());
 				response.setKey(e.getMsg().getKey());
 				response.setValue(e.getMsg().getValue());
@@ -98,31 +107,35 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				try {
 					xml = response.toXML();
 				} catch (KVException e1) {
-					xml = "xml parsing error";
+					//System.out.println(e1.getMsg().getMessage());
+					xml = "xml parsing error line 104";
 				}
+				byte[] xmlBytes = xml.getBytes();
 				try{
-						oos.writeObject(xml);
-						oos.flush();
+						fos.write(xmlBytes);
+						fos.flush();
 					} catch (IOException e2){
-						System.out.println("IO Error");
+						System.out.println("IO Error line 111");
 					}
 				s1.close();
 				failed = true;
 			}
+			System.out.println("message successfully parsed");
 		}
 		
 		public void run() {
-			ObjectOutputStream oos = null;
+			System.out.println("run called");
+			FilterOutputStream fos = null;
 			try {
-				oos = new ObjectOutputStream(s1.getOutputStream());
-				oos.flush();
+				fos = new FilterOutputStream(s1.getOutputStream());
+				fos.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
 			
 			KVMessage response = null;
-			String xml = "xml parsing error";
+			String xml = "xml parsing error line 129";
 			if(message.getMsgType() == "getreq") {
 				try {
 					String value = KVMessage.marshal(keyserver.get(
@@ -144,10 +157,10 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					} catch (KVException e1) {
 						System.out.println("Fail XML conversion");
 					}
-
+					byte[] xmlBytes = xml.getBytes();
 					try{
-						oos.writeObject(xml);
-						oos.flush();
+						fos.write(xmlBytes);
+						fos.flush();
 					} catch (IOException e){
 						System.out.println("IO Error");
 					}
@@ -174,10 +187,10 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					} catch (KVException e1) {
 						System.out.println("Fail XML conversion");
 					}
-
+					byte[] xmlBytes = xml.getBytes();
 					try{
-						oos.writeObject(xml);
-						oos.flush();
+						fos.write(xmlBytes);
+						fos.flush();
 					} catch (IOException e){
 						System.out.println("IO Error");
 					}
@@ -202,10 +215,10 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					} catch (KVException e1) {
 						System.out.println("Fail XML conversion");
 					}
-
+					byte[] xmlBytes = xml.getBytes();
 					try{
-						oos.writeObject(xml);
-						oos.flush();
+						fos.write(xmlBytes);
+						fos.flush();
 					} catch (IOException e){
 						System.out.println("IO Error");
 					}
