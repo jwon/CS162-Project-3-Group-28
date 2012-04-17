@@ -13,7 +13,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.junit.Test;
 
 
-
 public class KVMessageTest {
 
 	@Test

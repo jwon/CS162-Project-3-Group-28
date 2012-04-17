@@ -216,16 +216,16 @@ public class KVMessage {
 		d.appendChild(root);
 		if (key != null) {
 			Element keyNode = d.createElement("Key");
-			keyNode.appendChild(d.createTextNode(key));
+			keyNode.appendChild(d.createCDATASection(key));
 			root.appendChild(keyNode);
 		}
 		if (value != null) {
 			Element valueNode = d.createElement("Value");
-			valueNode.appendChild(d.createTextNode(value));
+			valueNode.appendChild(d.createCDATASection(value));
 			root.appendChild(valueNode);
 		}
 		Element statusNode = d.createElement("Status");
-		statusNode.appendChild(d.createTextNode(Boolean.toString(status)));
+		statusNode.appendChild(d.createCDATASection(Boolean.toString(status)));
 		root.appendChild(statusNode);
 		if (message != null) {
 			Element messageNode = d.createElement("Message");
@@ -257,15 +257,17 @@ public class KVMessage {
 //			return "";
 //		}
 		
+		//ret = DatatypeConverter.printBase64Binary(baos.toByteArray());
+		
 //		ret.replace("&", "&amp;");
 //		ret.replace("<", "&lt;");
 //		ret.replace(">", "&gt;");
 //		ret.replace("\"", "&quot;");
 //		ret.replace("'", "&apos;");
-		ret = ret.replace("<Key>", "<Key><![CDATA[");
-		ret = ret.replace("</Key>", "]]></Key>");
-		ret = ret.replace("<Value>", "<Value><![CDATA[");
-		ret = ret.replace("</Value>", "]]></Value>");
+//		ret = ret.replace("<Key>", "<Key><![CDATA[");
+//		ret = ret.replace("</Key>", "]]></Key>");
+//		ret = ret.replace("<Value>", "<Value><![CDATA[");
+//		ret = ret.replace("</Value>", "]]></Value>");
 		return ret;
 		//return baos.toString();
 		
