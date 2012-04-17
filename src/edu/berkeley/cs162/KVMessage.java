@@ -69,7 +69,7 @@ public class KVMessage {
 	private String key = null;
 	private String value = null;
 	private String status = null;
-	private String message = "blah blah blah";
+	private String message = null;
 
 	public KVMessage() {
 		
