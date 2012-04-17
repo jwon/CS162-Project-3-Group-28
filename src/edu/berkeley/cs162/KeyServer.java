@@ -68,6 +68,10 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Empty Value"));
 	    boolean store = dataStore.put(key,value);
 	    boolean cache = dataCache.put(key,value);
+		
+		System.out.println("store: " + store);
+		System.out.println("cache: " + cache);
+		
 	    if (store == true)
 		return true;
 	    if (store == false && cache == false)
