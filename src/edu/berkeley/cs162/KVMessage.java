@@ -68,7 +68,7 @@ public class KVMessage {
 	private String msgType = null;
 	private String key = null;
 	private String value = null;
-	private boolean status = false;
+	private String status = null;
 	private String message = "blah blah blah";
 
 	public KVMessage() {
@@ -84,15 +84,19 @@ public class KVMessage {
 	// This constructor will handle the Serializable -> String marshalling,
 	// and should be the one actually used by KVClient.
 	// Will throw DataFormatException if either the key or value are too long.
-	public KVMessage(String msgType, Serializable key, Serializable value, boolean status, String message) {
+	public KVMessage(String msgType, Serializable key, Serializable value, Boolean status, String message) {
 		
 		this.msgType = msgType;
 		this.key = marshal(key);
 		this.value = marshal(value);
-		this.status = status;
 		this.message = message;
 		
 		
+	}
+	
+	public KVMessage(String msgType, Serializable key, Serializable value, String status, String message) {
+		this(msgType, key, value, false, message);
+		this.status = status;
 	}
 	
 	/** Read the object from Base64 string. */
@@ -188,7 +192,7 @@ public class KVMessage {
 		}
 		
 		Node statusElem = root.getElementsByTagName("Status").item(0);
-		if (statusElem != null) status = Boolean.getBoolean(((Text)statusElem.getFirstChild()).getWholeText());
+		if (statusElem != null) status = ((Text)statusElem.getFirstChild()).getWholeText();
 		
 		Node messageElem = root.getElementsByTagName("Message").item(0);
 		if (messageElem != null) message = ((Text)messageElem.getFirstChild()).getWholeText();
@@ -232,9 +236,11 @@ public class KVMessage {
 			valueNode.appendChild(d.createCDATASection(value));
 			root.appendChild(valueNode);
 		}
-		Element statusNode = d.createElement("Status");
-		statusNode.appendChild(d.createCDATASection(Boolean.toString(status)));
-		root.appendChild(statusNode);
+		if (status != null) {
+			Element statusNode = d.createElement("Status");
+			statusNode.appendChild(d.createTextNode(status));
+			root.appendChild(statusNode);
+		}
 		if (message != null) {
 			Element messageNode = d.createElement("Message");
 			messageNode.appendChild(d.createCDATASection(message));
@@ -309,11 +315,12 @@ public class KVMessage {
 	}
 	
 	public void setStatus(boolean status) {
-		this.status = status;
+		if (status) this.status = "True";
+		else this.status = "False";
 	}
 	
 	public boolean getStatus(){
-		return status;
+		return Boolean.parseBoolean(status);
 	}
 
 	public void setMessage(String message) {

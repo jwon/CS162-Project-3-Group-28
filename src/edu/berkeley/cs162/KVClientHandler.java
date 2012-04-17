@@ -181,7 +181,8 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				 try {
 					boolean result = keyserver.put((K) KVMessage.unmarshal(message.getKey()),
 							(V) KVMessage.unmarshal(message.getValue()));
-					response = new KVMessage("resp" , null, null, result, "Success");
+					String resultString; if (result) resultString = "True"; else resultString = "False";
+					response = new KVMessage("resp" , null, null, resultString, "Success");
 					
 				} catch (KVException e) {
 					response = new KVMessage("resp", e.getMsg().getKey(), 
