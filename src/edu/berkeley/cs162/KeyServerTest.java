@@ -8,13 +8,17 @@ public class KeyServerTest{
 
     public static void putTest() {
 	KeyServer test = new KeyServer(1);
+	
+	Key k1 = new Key("key1");
+	Value v1 = new Value("value1");
+	
 	try {
-	    System.out.println(test.put("key", "value"));
+	    System.out.println(test.put(k1, v1));
 	} catch (KVException e) {
 	    System.out.println(e);
 	}
 	try {
-	    System.out.println(test.put("key", "value"));
+	    System.out.println(test.put(k1, v1));
 	} catch (KVException e) {
 	    System.out.println(e);
 	}
