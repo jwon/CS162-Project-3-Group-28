@@ -211,6 +211,8 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 
 		KVMessage reqMessage = new KVMessage("getreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
+		System.out.println("REQUEST XML: " + xml);
+		
 		byte [] xmlBytes = xml.getBytes();
 
 		try{
@@ -302,6 +304,8 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		KVMessage reqMessage = new KVMessage("delreq", keyAsString, valueAsString);
 		String xml = reqMessage.toXML();
+		System.out.println("REQUEST XML: " + xml);
+		
 		byte[] xmlBytes = xml.getBytes();
 
 		try{
