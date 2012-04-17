@@ -39,8 +39,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.StringReader;
-import java.io.StringWriter;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
@@ -54,14 +52,11 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.OutputKeys;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -103,10 +98,8 @@ public class KVMessage {
 	/** Read the object from Base64 string. */
     public static Object unmarshal(String s) throws IOException, ClassNotFoundException {
         byte [] data = DatatypeConverter.parseBase64Binary(s);
-	ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        ObjectInputStream ois = null;
-
-	ois = new ObjectInputStream(bais);
+        //byte [] data = s.getBytes("UTF-8");
+    	ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         Object o  = ois.readObject();
         ois.close();
         return o;
@@ -121,7 +114,13 @@ public class KVMessage {
 			oos.close();
 		} catch (IOException e) {
 		}
-
+        
+//        try {
+//			return baos.toString("UTF-8");
+//        	
+//		} catch (UnsupportedEncodingException e) {
+//			return "";
+//		}
         return DatatypeConverter.printBase64Binary(baos.toByteArray());
     }
 
@@ -137,19 +136,6 @@ public class KVMessage {
 	}
 	
 	public KVMessage(InputStream input) throws KVException{
-	
-		InputSource is = null;
-		
-		try {
-			ObjectInputStream in = new ObjectInputStream(input);
-			String xml = (String) in.readObject();
-			is = new InputSource();
-			is.setCharacterStream(new StringReader(xml));
-		}catch (IOException e1) {
-			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
-		}catch (ClassNotFoundException e) {
-			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
-		}
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
@@ -182,10 +168,17 @@ public class KVMessage {
 		msgType = root.getAttribute("type");
 		
 		Node keyElem = root.getElementsByTagName("Key").item(0);
-		if (keyElem != null) key = ((Text)keyElem.getFirstChild()).getWholeText();
+		if (keyElem != null) {
+			key = ((Text)keyElem.getFirstChild()).getWholeText();
+//			key = key.substring(9,key.length() - 3);
+		}
+		
 		
 		Node valueElem = root.getElementsByTagName("Value").item(0);
-		if (valueElem != null) value = ((Text)valueElem.getFirstChild()).getWholeText();
+		if (valueElem != null) {
+			value = ((Text)valueElem.getFirstChild()).getWholeText();
+//			value = value.substring(9,key.length() - 3);
+		}
 		
 		Node statusElem = root.getElementsByTagName("Status").item(0);
 		if (statusElem != null) status = Boolean.getBoolean(((Text)statusElem.getFirstChild()).getWholeText());
@@ -223,22 +216,21 @@ public class KVMessage {
 		d.appendChild(root);
 		if (key != null) {
 			Element keyNode = d.createElement("Key");
+			keyNode.appendChild(d.createCDATASection(key));
 			root.appendChild(keyNode);
-			keyNode.appendChild(d.createTextNode(key));
 		}
 		if (value != null) {
 			Element valueNode = d.createElement("Value");
+			valueNode.appendChild(d.createCDATASection(value));
 			root.appendChild(valueNode);
-			valueNode.appendChild(d.createTextNode(value));
 		}
 		Element statusNode = d.createElement("Status");
+		statusNode.appendChild(d.createCDATASection(Boolean.toString(status)));
 		root.appendChild(statusNode);
-		statusNode.appendChild(d.createTextNode(Boolean.toString(status)));
-		
 		if (message != null) {
 			Element messageNode = d.createElement("Message");
-			root.appendChild(messageNode);
 			messageNode.appendChild(d.createTextNode(message));
+			root.appendChild(messageNode);
 		}
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer t;
@@ -249,16 +241,35 @@ public class KVMessage {
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
 		}
 		
-		t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		t.setOutputProperty(OutputKeys.INDENT, "yes");
-		
-		StringWriter sw = new StringWriter();
+		//StringWriter sw = new StringWriter();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		String ret;
 		try {
-			t.transform(new DOMSource(d), new StreamResult(sw));
+			t.transform(new DOMSource(root), new StreamResult(baos));
+			//t.transform(new DOMSource(root), new StreamResult(sw));
 		} catch (TransformerException e) {
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to generate XML"));
 		}
-		return sw.toString();
+		//ret = sw.toString();
+//		try {
+//			ret = baos.toString("UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			return "";
+//		}
+		
+		ret = DatatypeConverter.printBase64Binary(baos.toByteArray());
+		
+//		ret.replace("&", "&amp;");
+//		ret.replace("<", "&lt;");
+//		ret.replace(">", "&gt;");
+//		ret.replace("\"", "&quot;");
+//		ret.replace("'", "&apos;");
+//		ret = ret.replace("<Key>", "<Key><![CDATA[");
+//		ret = ret.replace("</Key>", "]]></Key>");
+//		ret = ret.replace("<Value>", "<Value><![CDATA[");
+//		ret = ret.replace("</Value>", "]]></Value>");
+		return ret;
+		//return baos.toString();
 		
 		
 	}
