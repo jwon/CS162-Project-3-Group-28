@@ -137,7 +137,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			
 			KVMessage response = null;
 			String xml = "xml parsing error line 129";
-			if(message.getMsgType() == "getreq") {
+			if(message.getMsgType().equals("getreq")) {
 				try {
 					String value = KVMessage.marshal(keyserver.get(
 							(K) KVMessage.unmarshal(message.getKey())));
@@ -168,7 +168,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					}
 				} 
 				
-			} else if (message.getMsgType() == "putreq") {
+			} else if (message.getMsgType().equals("putreq")) {
 				 try {
 					boolean result = keyserver.put((K) KVMessage.unmarshal(message.getKey()),
 							(V) KVMessage.unmarshal(message.getValue()));
@@ -190,6 +190,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						System.out.println("Fail XML conversion");
 					}
 					byte[] xmlBytes = xml.getBytes();
+					System.out.println("Beginning response send");
 					try{
 						fos.write(xmlBytes);
 						fos.flush();
@@ -197,8 +198,9 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						System.out.println("IO Error");
 					}
 				}
+				 System.out.println("response sent");
 				 
-			} else if (message.getMsgType() == "delreq") {
+			} else if (message.getMsgType().equals("delreq")) {
 				try {
 					keyserver.del((K) KVMessage.unmarshal(message.getKey()));
 					response = new KVMessage("resp" , message.getKey() , null, false, "Success");

@@ -162,7 +162,7 @@ public class KVMessage {
 		try {
 			t.transform(new StreamSource(new NoCloseInputStream(input)), new DOMResult(d));
 		} catch (TransformerException e) {
-			System.out.println("throwing exception KV Message line 165");
+			System.out.println(e);
 			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
 		}
 		
