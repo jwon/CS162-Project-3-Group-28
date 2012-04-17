@@ -190,6 +190,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				} finally {
 					try {
 						xml = response.toXML();
+						System.out.println("XML RESPONSE: " + xml);
 					} catch (KVException e1) {
 						System.out.println("Fail XML conversion");
 					}
