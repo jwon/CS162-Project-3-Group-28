@@ -120,7 +120,8 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				s1.close();
 				failed = true;
 			}
-			System.out.println("message successfully parsed");
+			System.out.println("message from client successfully parsed, ConnectionHandler constructor finished");
+			System.out.println(message);
 		}
 		
 		public void run() {
