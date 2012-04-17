@@ -111,6 +111,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 
 		} catch(IOException e){
 			try{
+				System.out.println("Failed getting inputstream");
 				s.close();
 				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
 			} catch (IOException e2){
@@ -131,12 +132,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		try{
-			fos.close();
-		} catch(IOException e){
-			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
-		}
-		
-		try{
 			s.setSoTimeout(60000);
 		} catch(SocketException e){
 			System.out.println(e);
@@ -153,6 +148,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		try{
 			s.close();
+			fos.close();
 		} catch(IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
@@ -215,12 +211,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		try{
-			fos.close();
-		} catch(IOException e){
-			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
-		}
-		
-		try{
 			s.setSoTimeout(60000);
 		} catch(SocketException e){
 			try{
@@ -235,6 +225,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		try{
 			s.close();
+			fos.close();
 		} catch(IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
@@ -305,12 +296,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		try{
-			fos.close();
-		} catch(IOException e){
-			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
-		}
-		
-		try{
 			s.setSoTimeout(60000);
 		} catch(SocketException e){
 			try{
@@ -325,6 +310,7 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		
 		try{
 			s.close();
+			fos.close();
 		} catch(IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
 		}
