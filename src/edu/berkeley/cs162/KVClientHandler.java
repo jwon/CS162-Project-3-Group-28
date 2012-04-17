@@ -96,7 +96,9 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			String xml = null;
 			
 			try {
+				System.out.println("Getting inputstream");
 				message = new KVMessage(s1.getInputStream());
+				System.out.println("Got inputstream and parsed message");
 			} catch (KVException e) {
 				FilterOutputStream fos = new FilterOutputStream(s1.getOutputStream());
 				fos.flush();
