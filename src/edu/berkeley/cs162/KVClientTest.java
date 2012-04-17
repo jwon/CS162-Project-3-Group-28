@@ -98,7 +98,7 @@ public class KVClientTest {
 		} catch(IOException e){
 			System.out.println("IO Exception");
 		} catch(KVException e2){
-			System.out.println("KVException");
+			System.out.println(e2.getMsg());
 		}
     }
 	
