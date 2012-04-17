@@ -170,6 +170,11 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					} catch (IOException e){
 						System.out.println("IO Error");
 					}
+					try {
+						s1.shutdownOutput();
+					} catch (IOException e) {
+						
+					}
 				} 
 				
 			} else if (message.getMsgType().equals("putreq")) {
@@ -202,6 +207,11 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					} catch (IOException e){
 						System.out.println("IO Error");
 					}
+					try {
+						s1.shutdownOutput();
+					} catch (IOException e) {
+						
+					}
 				}
 				 System.out.println("response sent");
 				 
@@ -230,6 +240,11 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						fos.flush();
 					} catch (IOException e){
 						System.out.println("IO Error");
+					}
+					try {
+						s1.shutdownOutput();
+					} catch (IOException e) {
+						
 					}
 				}
 			}

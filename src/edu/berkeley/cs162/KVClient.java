@@ -106,6 +106,8 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			}
 		}
 		
+		
+		
 		try{
 			is = s.getInputStream();
 
@@ -131,6 +133,13 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		} catch (IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
 		}
+		
+		try {
+			s.shutdownOutput();
+		} catch (IOException e1) {
+			// TODO IO error KVException
+		}
+		
 		
 		try{
 			s.setSoTimeout(60000);
@@ -209,6 +218,12 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			fos.flush();
 		} catch (IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
+		}
+		
+		try {
+			s.shutdownOutput();
+		} catch (IOException e1) {
+			// TODO IO error KVException
 		}
 		
 		try{
@@ -294,6 +309,12 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 			fos.flush();
 		} catch (IOException e){
 			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error: Could not send data"));
+		}
+		
+		try {
+			s.shutdownOutput();
+		} catch (IOException e1) {
+			// TODO IO error KVException
 		}
 		
 		try{
