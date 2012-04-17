@@ -110,6 +110,9 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					//System.out.println(e1.getMsg().getMessage());
 					xml = "xml parsing error line 104";
 				}
+				
+				System.out.println("RESPONSE XML: " + xml);
+				
 				byte[] xmlBytes = xml.getBytes();
 				try{
 						fos.write(xmlBytes);
