@@ -107,6 +107,10 @@ public class KVMessage {
 
     /** Write the object to a Base64 string. */
     public static String marshal( Serializable o ) {
+		if(o == null){
+			return null;
+		}
+	
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
 			ObjectOutputStream oos = new ObjectOutputStream( baos );
