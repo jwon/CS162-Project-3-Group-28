@@ -131,6 +131,14 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		try{
+			s.close();
+			fos.close();
+
+		} catch(IOException e){
+			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
+		}
+		
+		try{
 			s.setSoTimeout(60000);
 		} catch(SocketException e){
 			try{
@@ -143,14 +151,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 
 		
 		KVMessage respMessage = new KVMessage(is);
-		
-		try{
-			s.close();
-			fos.close();
-
-		} catch(IOException e){
-			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
-		}
 		
 		if(respMessage.getMessage().equals("Success")){
 			return respMessage.getStatus();
@@ -210,6 +210,13 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		try{
+			s.close();
+			fos.close();
+		} catch(IOException e){
+			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
+		}
+		
+		try{
 			s.setSoTimeout(60000);
 		} catch(SocketException e){
 			try{
@@ -221,13 +228,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 
 		KVMessage respMessage = new KVMessage(is);
-		
-		try{
-			s.close();
-			fos.close();
-		} catch(IOException e){
-			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
-		}
 		
 		if(respMessage.getMessage().equals("Success")){
 			V value = null;
@@ -295,6 +295,13 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		try{
+			s.close();
+			fos.close();
+		} catch(IOException e){
+			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
+		}
+		
+		try{
 			s.setSoTimeout(60000);
 		} catch(SocketException e){
 			try{
@@ -306,13 +313,6 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		}
 		
 		KVMessage respMessage = new KVMessage(is);
-		
-		try{
-			s.close();
-			fos.close();
-		} catch(IOException e){
-			throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
-		}
 		
 		if(!respMessage.getMessage().equals("Success")){
 			throw new KVException(new KVMessage("resp", keyAsString, null, false, respMessage.getMessage()));
