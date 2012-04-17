@@ -7,14 +7,18 @@ import org.junit.Test;
 public class KeyServerTest{
 
     public static void putTest() {
-	KeyServer test = new KeyServer(2);
+	KeyServer test = new KeyServer(1);
+	
+	Key k1 = new Key("key1");
+	Value v1 = new Value("value1");
+	
 	try {
-	    assertTrue(test.put("key", "value") == false);
+	    System.out.println(test.put(k1, v1));
 	} catch (KVException e) {
 	    System.out.println(e);
 	}
 	try {
-	    assertTrue(test.put("key", "value") == true);
+	    System.out.println(test.put(k1, v1));
 	} catch (KVException e) {
 	    System.out.println(e);
 	}

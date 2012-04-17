@@ -70,9 +70,9 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 	 */
 	@Override
 	public void handle(Socket client) throws IOException {
-		System.out.println("handle called");
+		//System.out.println("handle called");
 		ConnectionHandler newTask = new ConnectionHandler(client);
-		System.out.println("Time to add to ThreadPool");
+		//System.out.println("Time to add to ThreadPool");
 		if(newTask.failed == false){
 			try {
 				threadpool.addToQueue(newTask);
@@ -90,7 +90,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 		public boolean failed = false;
 		
 		public ConnectionHandler(Socket client) throws IOException{
-			System.out.println("ConnectionHandler constructor called");
+			//System.out.println("ConnectionHandler constructor called");
 			this.s1 = client;
 			KVMessage response = new KVMessage("resp", null, null);
 			String xml = null;
@@ -179,10 +179,16 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				
 			} else if (message.getMsgType().equals("putreq")) {
 				 try {
-					boolean result = keyserver.put((K) KVMessage.unmarshal(message.getKey()),
-							(V) KVMessage.unmarshal(message.getValue()));
+					 System.out.println("message.getKey(): " + message.getKey());
+					K k1 = (K) KVMessage.unmarshal(message.getKey());
+					System.out.println("k1: " + k1);
+					System.out.println("message.getValue(): " + message.getValue());
+					V v1 = (V) KVMessage.unmarshal(message.getValue());
+					System.out.println("v1: " + v1);
+					boolean result = keyserver.put(k1,v1);
 					String resultString; if (result) resultString = "True"; else resultString = "False";
 					response = new KVMessage("resp" , null, null, resultString, "Success");
+
 					
 				} catch (KVException e) {
 					response = new KVMessage("resp", e.getMsg().getKey(), 
