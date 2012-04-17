@@ -139,9 +139,9 @@ public class KVClient<K extends Serializable, V extends Serializable> implements
 		try{
 			s.setSoTimeout(60000);
 		} catch(SocketException e){
-			try{
+			System.out.println(e);
+			try{	
 				s.close();
-				System.out.println(e);
 				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "Network Error"));
 			} catch (IOException e2){
 				throw new KVException(new KVMessage("resp", keyAsString, valueAsString, false, "IO Error"));
