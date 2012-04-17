@@ -56,6 +56,10 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	public boolean put(K key, V value) throws KVException {
 	    String keyString = KVMessage.marshal(key);
 	    String valueString = KVMessage.marshal(value);
+		
+		System.out.println("Keyserver key: " + key);
+		System.out.println("Keyserver value: " + value);
+		
 	    byte[] size = (keyString).getBytes();
 	    if (size.length > 256)
 		throw new KVException(new KVMessage("resp", keyString, valueString, false, "Over sized key"));
@@ -68,6 +72,10 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Empty Value"));
 	    boolean store = dataStore.put(key,value);
 	    boolean cache = dataCache.put(key,value);
+		
+		System.out.println("store: " + store);
+		System.out.println("cache: " + cache);
+		
 	    if (store == true)
 		return true;
 	    if (store == false && cache == false)
