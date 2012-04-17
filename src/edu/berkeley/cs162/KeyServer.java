@@ -51,6 +51,7 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	public KeyServer(int cacheSize) {
 	    dataCache = new KVCache(cacheSize);
 	    dataStore = new KVStore();
+		System.out.println("New KeyServer instance created!!!");
 	}
 	
 	public boolean put(K key, V value) throws KVException {
