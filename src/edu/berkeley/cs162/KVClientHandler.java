@@ -100,6 +100,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				message = new KVMessage(s1.getInputStream());
 				//System.out.println("Got inputstream and parsed message");
 			} catch (KVException e) {
+				System.out.println("RAWR, THIS IS NOT GOOD");
 				FilterOutputStream fos = new FilterOutputStream(s1.getOutputStream());
 				fos.flush();
 				System.out.println("KVException caught line 94");
@@ -189,7 +190,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					String resultString; if (result) resultString = "True"; else resultString = "False";
 					response = new KVMessage("resp" , null, null, resultString, "Success");
 
-					
 				} catch (KVException e) {
 					response = new KVMessage("resp", e.getMsg().getKey(), 
 							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());
