@@ -193,12 +193,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				} catch (KVException e) {
 					response = new KVMessage("resp", e.getMsg().getKey(), 
 							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());
-				} catch (IOException e) {
-					response = new KVMessage("resp", null, null
-							, false, "IO Error");
-				} catch (ClassNotFoundException e) {
-					response = new KVMessage("resp", null, null
-							, false, "Unkown Error: Class Not Found");
 				} finally {
 					try {
 						xml = response.toXML();
