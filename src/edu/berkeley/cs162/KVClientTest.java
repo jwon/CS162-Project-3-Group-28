@@ -76,7 +76,7 @@ public class KVClientTest {
 		
 		//Value.equals(Value)
 		System.out.println("kvc.get(k1): " + kvc.get(k1));
-		/*
+		
 		if(v1.equals(temp)){
 			System.out.println("GET SUCCEEDED.");
 		}
@@ -85,7 +85,7 @@ public class KVClientTest {
 		}
 
 		System.out.println("******************************");
-		*/
+		
 		//Test del, get
 		System.out.println("Testing DEL");
 		kvc.del(k1);
