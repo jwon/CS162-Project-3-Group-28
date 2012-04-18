@@ -51,7 +51,6 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	public KeyServer(int cacheSize) {
 	    dataCache = new KVCache(cacheSize);
 	    dataStore = new KVStore();
-		System.out.println("New KeyServer instance created!!!");
 	}
 	
 	public boolean put(K key, V value) throws KVException {
@@ -71,19 +70,9 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Over sized value"));
 	    if (size.length == 0)
 	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Empty Value"));
-	    
-		System.out.println("dataStore.get(key): " + dataStore.get(key));
-		System.out.println("dataStore.get((K)HI): " + dataStore.get((K)"HI"));
-		System.out.println("dataStore.put((K)HI): " + dataStore.put((K)"HI",value));
-		System.out.println("dataStore.get((K)HI): " + dataStore.get((K)"HI"));
 		
 		boolean store = dataStore.put(key,value);
 	    boolean cache = dataCache.put(key,value);
-		
-		System.out.println("dataStore.get(key): " + dataStore.get(key));
-		
-		System.out.println("store: " + store);
-		System.out.println("cache: " + cache);
 		
 	    if (store == true)
 		return true;
