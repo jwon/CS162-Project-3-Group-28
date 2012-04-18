@@ -73,7 +73,7 @@ public class KVClientTest {
 
 		//Test get
 		System.out.println("Testing GET");
-		System.out.println("Get HI: " + kvc.get((K)"HI"));
+		System.out.println("Get HI: " + kvc.get("HI"));
 		
 		if(v1.equals(kvc.get(k1))){
 			System.out.println("GET SUCCEEDED.");
