@@ -72,12 +72,15 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	    if (size.length == 0)
 	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Empty Value"));
 	    
-		System.out.println("dataStore.get: " + dataStore.get(key));
+		System.out.println("dataStore.get(key): " + dataStore.get(key));
+		System.out.println("dataStore.get(value): " + dataStore.get(value));
+		System.out.println("dataStore.put: " + dataStore.put(value,value));
+		System.out.println("dataStore.get(value): " + dataStore.get(value));
 		
 		boolean store = dataStore.put(key,value);
 	    boolean cache = dataCache.put(key,value);
 		
-		System.out.println("dataStore.get: " + dataStore.get(key));
+		System.out.println("dataStore.get(key): " + dataStore.get(key));
 		
 		System.out.println("store: " + store);
 		System.out.println("cache: " + cache);
