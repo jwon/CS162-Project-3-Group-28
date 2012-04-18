@@ -71,7 +71,6 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Over sized value"));
 	    if (size.length == 0)
 	    	throw new KVException(new KVMessage("resp", keyString, valueString, false, "Empty Value"));
-<<<<<<< HEAD
 	    
 		System.out.println("dataStore.get(key): " + dataStore.get(key));
 		System.out.println("dataStore.get((K)HI): " + dataStore.get((K)"HI"));
@@ -86,11 +85,6 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		synchronized (dataCache) {
 		    cache = dataCache.put(key,value);
 		}
-=======
-		
-		boolean store = dataStore.put(key,value);
-	    boolean cache = dataCache.put(key,value);
->>>>>>> b23188640ae02ea9dfae6e68dc68e6f60e2574c1
 		
 	    if (store == true)
 		return true;
