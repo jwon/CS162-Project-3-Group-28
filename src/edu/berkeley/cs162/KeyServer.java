@@ -30,6 +30,7 @@
 package edu.berkeley.cs162;
 
 import java.io.Serializable;
+import java.util.*;
 
 /**
  * This class defines the salve key value servers. Each individual KeyServer 
@@ -76,9 +77,15 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		System.out.println("dataStore.get((K)HI): " + dataStore.get((K)"HI"));
 		System.out.println("dataStore.put((K)HI): " + dataStore.put((K)"HI",value));
 		System.out.println("dataStore.get((K)HI): " + dataStore.get((K)"HI"));
-		
-		boolean store = dataStore.put(key,value);
-	    boolean cache = dataCache.put(key,value);
+
+		boolean store = false;
+		boolean cache = false;
+		synchronized (dataStore) {		
+		    store = dataStore.put(key,value);
+		}
+		synchronized (dataCache) {
+		    cache = dataCache.put(key,value);
+		}
 		
 		System.out.println("dataStore.get(key): " + dataStore.get(key));
 		
