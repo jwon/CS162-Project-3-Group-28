@@ -55,6 +55,8 @@ public class KVStore<K extends Serializable, V extends Serializable> implements 
 		putDelay();
 		V existingValue = get(key);
 		store.put(key, value);
+		
+		System.out.println("DICTIONARY: " + store);
 		if (existingValue == null) {
 			return false;
 		}
