@@ -110,6 +110,7 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		} catch (KVException e) {
 			throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
 		}
+		throw new KVException(new KVMessage("resp", null, null, null, "Does Not Exist"));
 	}
 
 	@Override
