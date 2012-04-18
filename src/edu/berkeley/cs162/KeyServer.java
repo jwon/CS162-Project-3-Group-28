@@ -79,12 +79,10 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		    synchronized (dataStore) {
 			store = dataStore.put(key,value);
 		    }
-		}catch (IOException e) {
+		}catch (KVException e) {
 			throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
 		}
-		synchronized (dataCache) {
-		    cache = dataCache.put(key,value);
-		}
+		cache = dataCache.put(key,value);
 		
 	    if (store == true)
 		return true;
@@ -109,7 +107,7 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		    if (dataStore.get(key) != null) {
 			return dataStore.get(key);
 		    }
-		} catch (IOException e) {
+		} catch (KVException e) {
 			throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
 		}
 		else {
@@ -132,20 +130,18 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		    throw new KVException(new KVMessage("resp", keyString, null, false, "Does not exist"));			
 		}
 	    }
-	    catch (IOException e) {
+	    catch (KVException e) {
 		throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
 	    }	
-		
-		synchronized (dataCache) {
-		    dataCache.del(key);
+
+	    dataCache.del(key);
+	    try{
+		synchronized (dataStore) {
+		    dataStore.del(key);
 		}
-		try{
-		    synchronized (dataStore) {
-			dataStore.del(key);
-		    }
-		} catch (IOException e) {
-		    throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
-		}
+	    } catch (KVException e) {
+		throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
+	    }
 	}
 }
 
