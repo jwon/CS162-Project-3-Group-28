@@ -59,6 +59,8 @@ public class KVClientTest {
 			System.out.println("PUT RETURNED FALSE.");
 		}
 		
+		System.out.println("******************************");
+		
 		System.out.println("Testing PUT #2");
 		if(kvc.put(k1, v1)){
 			System.out.println("PUT RETURNED TRUE.");
@@ -66,6 +68,8 @@ public class KVClientTest {
 		else{
 			System.out.println("PUT RETURNED FALSE.");
 		}
+		
+		System.out.println("******************************");
 
 		//Test get
 		System.out.println("Testing GET");
@@ -76,6 +80,8 @@ public class KVClientTest {
 			System.out.println("GET FAILED.");
 		}
 
+		System.out.println("******************************");
+		
 		//Test del, get
 		System.out.println("Testing DEL");
 		kvc.del(k1);
@@ -91,6 +97,8 @@ public class KVClientTest {
 		else{
 			System.out.println("No, del failed...");
 		}
+		
+		System.out.println("******************************");
 
 	}
 	
