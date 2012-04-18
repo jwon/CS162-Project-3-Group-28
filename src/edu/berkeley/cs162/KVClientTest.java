@@ -75,13 +75,16 @@ public class KVClientTest {
 		System.out.println("Testing GET");
 		
 		//Value.equals(Value)
-		if(v1.equals(kvc.get(k1))){
+		V temp = kvc.get(k1);
+		System.out.println("kvc.get(k1): " + temp);
+		/*
+		if(v1.equals(temp)){
 			System.out.println("GET SUCCEEDED.");
 		}
 		else{
 			System.out.println("GET FAILED.");
 		}
-
+*/
 		System.out.println("******************************");
 		
 		//Test del, get
