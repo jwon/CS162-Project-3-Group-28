@@ -80,7 +80,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					e.printStackTrace();
 			}		
 		} else {
-			System.out.println("xml parsing error");
+			//System.out.println("xml parsing error");
 		}
 	}
 	
@@ -100,10 +100,10 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				message = new KVMessage(s1.getInputStream());
 				//System.out.println("Got inputstream and parsed message");
 			} catch (KVException e) {
-				System.out.println("RAWR, THIS IS NOT GOOD");
+				//System.out.println("RAWR, THIS IS NOT GOOD");
 				FilterOutputStream fos = new FilterOutputStream(s1.getOutputStream());
 				fos.flush();
-				System.out.println("KVException caught line 94");
+				//System.out.println("KVException caught line 94");
 				response.setMessage(e.getMsg().getMessage());
 				try {
 					xml = response.toXML();
@@ -117,13 +117,13 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						fos.write(xmlBytes);
 						fos.flush();
 					} catch (IOException e2){
-						System.out.println("IO Error line 111");
+						//System.out.println("IO Error line 111");
 					}
 				s1.close();
 				failed = true;
 			}
-			System.out.println("KVMessage from client:");
-			System.out.println(message);
+			//System.out.println("KVMessage from client:");
+			//System.out.println(message);
 		}
 		
 		public void run() {
@@ -154,16 +154,16 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				} finally {
 					try {
 						xml = response.toXML();
-						System.out.println("XML RESPONSE: " + xml);
+						//System.out.println("XML RESPONSE: " + xml);
 					} catch (KVException e1) {
-						System.out.println("Fail XML conversion");
+						//System.out.println("Fail XML conversion");
 					}
 					byte[] xmlBytes = xml.getBytes();
 					try{
 						fos.write(xmlBytes);
 						fos.flush();
 					} catch (IOException e){
-						System.out.println("IO Error");
+						//System.out.println("IO Error");
 					}
 					try {
 						s1.shutdownOutput();
@@ -185,9 +185,9 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				} finally {
 					try {
 						xml = response.toXML();
-						System.out.println("XML RESPONSE: " + xml);
+						//System.out.println("XML RESPONSE: " + xml);
 					} catch (KVException e1) {
-						System.out.println("Fail XML conversion");
+						//System.out.println("Fail XML conversion");
 					}
 					byte[] xmlBytes = xml.getBytes();
 					//System.out.println("Beginning response send");
@@ -195,7 +195,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						fos.write(xmlBytes);
 						fos.flush();
 					} catch (IOException e){
-						System.out.println("IO Error");
+						//System.out.println("IO Error");
 					}
 					try {
 						s1.shutdownOutput();
@@ -203,8 +203,8 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						
 					}
 				}
-				 System.out.println("response sent");
-				 System.out.println("******************************");
+				 //System.out.println("response sent");
+				 //System.out.println("******************************");
 				 
 			} else if (message.getMsgType().equals("delreq")) {
 				try {
@@ -217,14 +217,14 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					try {
 						xml = response.toXML();
 					} catch (KVException e1) {
-						System.out.println("Fail XML conversion");
+						//System.out.println("Fail XML conversion");
 					}
 					byte[] xmlBytes = xml.getBytes();
 					try{
 						fos.write(xmlBytes);
 						fos.flush();
 					} catch (IOException e){
-						System.out.println("IO Error");
+						//System.out.println("IO Error");
 					}
 					try {
 						s1.shutdownOutput();
