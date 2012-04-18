@@ -144,19 +144,12 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			String xml = "xml parsing error line 129";
 			if(message.getMsgType().equals("getreq")) {
 				try {
-					String value = KVMessage.marshal(keyserver.get(
-							(K) KVMessage.unmarshal(message.getKey())));
+					String value = keyserver.get((K)message.getKey());
 					response = new KVMessage("resp" , message.getKey(), value,
 							false, "Success");
 				} catch (KVException e) {
 					response = new KVMessage("resp", e.getMsg().getKey(), 
 							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());		
-				} catch (IOException e) {
-					response = new KVMessage("resp", null, null
-							, false, "IO Error");
-				} catch (ClassNotFoundException e) {
-					response = new KVMessage("resp", null, null
-							, false, "Unkown Error: Class Not Found");
 				} finally {
 					try {
 						xml = response.toXML();
@@ -180,12 +173,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				
 			} else if (message.getMsgType().equals("putreq")) {
 				 try {
-					 //System.out.println("message.getKey(): " + message.getKey());
-					//K k1 = (K) KVMessage.unmarshal(message.getKey());
-					//System.out.println("k1: " + k1);
-					//System.out.println("message.getValue(): " + message.getValue());
-					//V v1 = (V) KVMessage.unmarshal(message.getValue());
-					//System.out.println("v1: " + v1);
 					boolean result = keyserver.put((K)message.getKey(),(V)message.getValue());
 					String resultString; if (result) resultString = "True"; else resultString = "False";
 					response = new KVMessage("resp" , null, null, resultString, "Success");
@@ -219,17 +206,11 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				 
 			} else if (message.getMsgType().equals("delreq")) {
 				try {
-					keyserver.del((K) KVMessage.unmarshal(message.getKey()));
+					keyserver.del((K) message.getKey());
 					response = new KVMessage("resp" , message.getKey() , null, false, "Success");
 				} catch (KVException e) {
 					response = new KVMessage("resp", e.getMsg().getKey(), 
 							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());
-				} catch (IOException e) {
-					response = new KVMessage("resp", null, null
-							, false, "IO Error");
-				} catch (ClassNotFoundException e) {
-					response = new KVMessage("resp", null, null
-							, false, "Unkown Error: Class Not Found");
 				} finally {
 					try {
 						xml = response.toXML();
