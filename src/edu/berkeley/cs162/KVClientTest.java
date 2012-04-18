@@ -53,27 +53,27 @@ public class KVClientTest {
 		//Test put
 		System.out.println("Testing PUT");
 		if(kvc.put(k1, v1)){
-			System.out.println("PUT succeeded. Value overwritten.");
+			System.out.println("PUT RETURNED TRUE");
 		}
 		else{
-			System.out.println("PUT succeeded with empty key or PUT FAILED");
+			System.out.println("PUT RETURNED FALSE.");
 		}
 		
 		System.out.println("Testing PUT #2");
 		if(kvc.put(k1, v1)){
-			System.out.println("PUT succeeded. Value overwritten.");
+			System.out.println("PUT RETURNED TRUE.");
 		}
 		else{
-			System.out.println("PUT succeeded with empty key or PUT FAILED");
+			System.out.println("PUT RETURNED FALSE.");
 		}
 
 		//Test get
 		System.out.println("Testing GET");
 		if(v1.equals(kvc.get(k1))){
-			System.out.println("Yay! get worked!");
+			System.out.println("GET SUCCEEDED.");
 		}
 		else{
-			System.out.println("No, get failed...");
+			System.out.println("GET FAILED.");
 		}
 
 		//Test del, get
