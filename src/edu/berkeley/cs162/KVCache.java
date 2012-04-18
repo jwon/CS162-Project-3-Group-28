@@ -113,8 +113,12 @@ public class KVCache<K extends Serializable, V extends Serializable> implements 
 	 */
 	public void del (K key) {
 		// implement me
-		order.remove(key);
-		cache.remove(key);
+		synchronized(order){
+			order.remove(key);
+		}
+		synchronized(cache){
+			cache.remove(key);
+		}
 	}
 
 	//this method for testing purposes only
