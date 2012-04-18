@@ -146,7 +146,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				try {
 					String value = (String) keyserver.get((K)message.getKey());
 					response = new KVMessage("resp" , message.getKey(), value,
-							false, "Success");
+							null, "Success");
 				} catch (KVException e) {
 					response = new KVMessage("resp", e.getMsg().getKey(), 
 							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());		
@@ -207,7 +207,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			} else if (message.getMsgType().equals("delreq")) {
 				try {
 					keyserver.del((K) message.getKey());
-					response = new KVMessage("resp" , message.getKey() , null, false, "Success");
+					response = new KVMessage("resp" , message.getKey() , null, null, "Success");
 				} catch (KVException e) {
 					response = new KVMessage("resp", e.getMsg().getKey(), 
 							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());
