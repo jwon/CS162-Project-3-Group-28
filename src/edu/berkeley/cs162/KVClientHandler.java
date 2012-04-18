@@ -144,7 +144,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			String xml = "xml parsing error line 129";
 			if(message.getMsgType().equals("getreq")) {
 				try {
-					String value = keyserver.get((K)message.getKey());
+					String value = (String) keyserver.get((K)message.getKey());
 					response = new KVMessage("resp" , message.getKey(), value,
 							false, "Success");
 				} catch (KVException e) {
