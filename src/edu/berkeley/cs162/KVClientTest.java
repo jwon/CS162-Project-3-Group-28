@@ -111,6 +111,9 @@ public class KVClientTest {
 			System.out.println("ClassNotFound Exception");
 		}
 		*/
+		System.out.println("******************************");
+		System.out.println("******************************");
+		
 		try{
 			testPutGetDel();
 		} catch(IOException e){

@@ -40,6 +40,8 @@ public class Server {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
+		System.out.println("******************************");
+		System.out.println("******************************");
 		System.out.println("Binding Server:");
 		key_server = new KeyServer<String, String>(1000);
 		System.out.println("1");
@@ -51,6 +53,7 @@ public class Server {
 		System.out.println("4");
 		server.connect();
 		System.out.println("Starting Server");
+		System.out.println("******************************");
 		server.run();
 	}
 
