@@ -84,7 +84,7 @@ public class KVMessage {
 	// This constructor will handle the Serializable -> String marshalling,
 	// and should be the one actually used by KVClient.
 	// Will throw DataFormatException if either the key or value are too long.
-	public KVMessage(String msgType, Serializable key, Serializable value, Boolean status, String message) {
+	public KVMessage(String msgType, Serializable key, Serializable value, boolean status, String message) {
 		
 		this.msgType = msgType;
 		this.key = marshal(key);
