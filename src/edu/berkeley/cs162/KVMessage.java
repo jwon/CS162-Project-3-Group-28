@@ -150,7 +150,7 @@ public class KVMessage {
 		try {
 			db = dbf.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			System.out.println("throwing exception KVMessage line 145");
+			//System.out.println("throwing exception KVMessage line 145");
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize DocumentBuilder"));
 		}
 		
@@ -163,14 +163,14 @@ public class KVMessage {
 		try {
 			t = tf.newTransformer();
 		} catch (TransformerConfigurationException e) {
-			System.out.println("throwing exception KVMessage line 158");
+			//System.out.println("throwing exception KVMessage line 158");
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
 		}
 		
 		try {
 			t.transform(new StreamSource(new NoCloseInputStream(input)), new DOMResult(d));
 		} catch (TransformerException e) {
-			System.out.println(e);
+			//System.out.println(e);
 			throw new KVException(new KVMessage("resp", null, null, false, "XML Error: Received unparseable message"));
 		}
 		
@@ -219,7 +219,7 @@ public class KVMessage {
 		try {
 			db = dbf.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			System.out.println("throwing exception KVMessage line 214");
+			//System.out.println("throwing exception KVMessage line 214");
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize DocumentBuilder"));
 		}
 		Document d = db.newDocument();
@@ -252,7 +252,7 @@ public class KVMessage {
 		try {
 			t = tf.newTransformer();
 		} catch (TransformerConfigurationException e) {
-			System.out.println("throwing exception KVMessage line 245");
+			//System.out.println("throwing exception KVMessage line 245");
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to initialize Transformer"));
 		}
 		
@@ -263,7 +263,7 @@ public class KVMessage {
 			//t.transform(new DOMSource(root), new StreamResult(baos));
 			t.transform(new DOMSource(root), new StreamResult(sw));
 		} catch (TransformerException e) {
-			System.out.println("throwing exception KVMessage line 256");
+			//System.out.println("throwing exception KVMessage line 256");
 			throw new KVException(new KVMessage("resp", null, null, false, "Unknown error: Unable to generate XML"));
 		}
 		ret = sw.toString();
