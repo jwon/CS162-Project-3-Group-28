@@ -75,7 +75,7 @@ public class KVClientTest {
 		System.out.println("Testing GET");
 		
 		//Value.equals(Value)
-		System.out.println("kvc.get(k1): " + kvc.get(k1));
+		//System.out.println("kvc.get(k1): " + kvc.get(k1));
 		
 		if(v1.equals(kvc.get(k1))){
 			System.out.println("GET SUCCEEDED.");
@@ -89,18 +89,18 @@ public class KVClientTest {
 		//Test del, get
 		System.out.println("Testing DEL");
 		kvc.del(k1);
-		boolean test = true;
+		boolean test = false;
 		try{
 			Value exception = kvc.get(k1);
 		}catch(KVException kve){
-			System.out.println("TEST GET EXCEPTION: " + kve.getMsg());
-			test = false;
+			//System.out.println("TEST GET EXCEPTION: " + kve.getMsg());
+			test = true;
 		}
 		if(test){
-			System.out.println("Yay! del worked!");
+			System.out.println("DEL SUCCEEDED.");
 		}
 		else{
-			System.out.println("No, del failed...");
+			System.out.println("DEL FAILED");
 		}
 		
 		System.out.println("******************************");
