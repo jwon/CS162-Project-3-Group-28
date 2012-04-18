@@ -145,7 +145,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			if(message.getMsgType().equals("getreq")) {
 				try {
 					V value = (V)KVMessage.unmarshal((String)keyserver.get((K)message.getKey()));
-					System.out.println("Value from GET: " + value);
+					//System.out.println("Value from GET: " + value);
 					response = new KVMessage("resp" , message.getKey(), value, null, "Success");
 				} catch (KVException e) {
 					response = new KVMessage("resp", e.getMsg().getKey(), 
@@ -174,6 +174,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						
 					}
 				} 
+				System.out.println("******************************");
 				
 			} else if (message.getMsgType().equals("putreq")) {
 				 try {

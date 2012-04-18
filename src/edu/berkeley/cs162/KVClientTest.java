@@ -93,6 +93,7 @@ public class KVClientTest {
 		try{
 			Value exception = kvc.get(k1);
 		}catch(KVException kve){
+			System.out.println("TEST GET EXCEPTION: " + kve);
 			test = false;
 		}
 		if(test){
