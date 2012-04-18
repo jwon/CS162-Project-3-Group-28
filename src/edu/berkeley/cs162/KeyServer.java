@@ -74,8 +74,13 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 
 		boolean store = false;
 		boolean cache = false;
-		synchronized (dataStore) {		
-		    store = dataStore.put(key,value);
+		
+		try{
+		    synchronized (dataStore) {
+			store = dataStore.put(key,value);
+		    }
+		}catch (IOException e) {
+			throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
 		}
 		synchronized (dataCache) {
 		    cache = dataCache.put(key,value);
@@ -99,9 +104,15 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		
 		if(dataCache.get(key) != null){
 			return dataCache.get(key);
-		} else if (dataStore.get(key) != null) {
+		}
+		try{
+		    if (dataStore.get(key) != null) {
 			return dataStore.get(key);
-		} else {
+		    }
+		} catch (IOException e) {
+			throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
+		}
+		else {
 			throw new KVException(new KVMessage("resp", keyString, null, false, "Does not exist"));
 		}
 	}
@@ -115,16 +126,25 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 		throw new KVException(new KVMessage("resp", keyString, null, false, "Over sized key"));
 	    if (size.length == 0)
 		throw new KVException(new KVMessage("resp", keyString, null, false, "Empty key"));
-	    
+
+	    try{
 		if(dataCache.get(key) == null && dataStore.get(key) == null) {
-			throw new KVException(new KVMessage("resp", keyString, null, false, "Does not exist"));			
+		    throw new KVException(new KVMessage("resp", keyString, null, false, "Does not exist"));			
 		}
+	    }
+	    catch (IOException e) {
+		throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
+	    }	
 		
 		synchronized (dataCache) {
 		    dataCache.del(key);
 		}
-		synchronized (dataStore) {
-		    dataStore.del(key);
+		try{
+		    synchronized (dataStore) {
+			dataStore.del(key);
+		    }
+		} catch (IOException e) {
+		    throw new KVException(new KVMessage("resp", null, null, null, "IO Error"));
 		}
 	}
 }
