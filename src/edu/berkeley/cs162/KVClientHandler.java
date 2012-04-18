@@ -105,9 +105,6 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 				fos.flush();
 				System.out.println("KVException caught line 94");
 				response.setMessage(e.getMsg().getMessage());
-				response.setKey(e.getMsg().getKey());
-				response.setValue(e.getMsg().getValue());
-				response.setStatus(e.getMsg().getStatus());
 				try {
 					xml = response.toXML();
 				} catch (KVException e1) {
@@ -148,12 +145,12 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					//System.out.println("Value from GET: " + value);
 					response = new KVMessage("resp" , message.getKey(), value, null, "Success");
 				} catch (KVException e) {
-					response = new KVMessage("resp", e.getMsg().getKey(), 
-							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());		
+					response = new KVMessage("resp", null, 
+							null, null, e.getMsg().getMessage());		
 				} catch (IOException e) {
-					response = new KVMessage("resp", null, null, false, "IO Error");
+					response = new KVMessage("resp", null, null, null, "IO Error");
 				} catch (ClassNotFoundException e) {
-					response = new KVMessage("resp", null, null, false, "Unkown Error: Class Not Found");
+					response = new KVMessage("resp", null, null, null, "Unkown Error: Class Not Found");
 				} finally {
 					try {
 						xml = response.toXML();
@@ -183,8 +180,8 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 					response = new KVMessage("resp" , null, null, resultString, "Success");
 
 				} catch (KVException e) {
-					response = new KVMessage("resp", e.getMsg().getKey(), 
-							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());
+					response = new KVMessage("resp", null, 
+							null, null, e.getMsg().getMessage());
 				} finally {
 					try {
 						xml = response.toXML();
@@ -212,10 +209,10 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 			} else if (message.getMsgType().equals("delreq")) {
 				try {
 					keyserver.del((K) message.getKey());
-					response = new KVMessage("resp" , message.getKey() , null, null, "Success");
+					response = new KVMessage("resp" , null, null, null, "Success");
 				} catch (KVException e) {
-					response = new KVMessage("resp", e.getMsg().getKey(), 
-							e.getMsg().getValue(), e.getMsg().getStatus(), e.getMsg().getMessage());
+					response = new KVMessage("resp", null, 
+							null, null, e.getMsg().getMessage());
 				} finally {
 					try {
 						xml = response.toXML();
