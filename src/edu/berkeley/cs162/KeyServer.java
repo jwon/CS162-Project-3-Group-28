@@ -58,8 +58,8 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 	    String keyString = KVMessage.marshal(key);
 	    String valueString = KVMessage.marshal(value);
 		
-		System.out.println("Keyserver key: " + key);
-		System.out.println("Keyserver value: " + value);
+		//System.out.println("Keyserver key: " + key);
+		//System.out.println("Keyserver value: " + value);
 		
 	    byte[] size = (keyString).getBytes();
 	    if (size.length > 256)
