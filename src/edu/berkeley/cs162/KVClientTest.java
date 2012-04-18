@@ -74,7 +74,8 @@ public class KVClientTest {
 		//Test get
 		System.out.println("Testing GET");
 		
-		if(v1.equals(KVMessage.unmarshal((String)kvc.get(k1)))){
+		//Value.equals(Value)
+		if(v1.equals(kvc.get(k1))){
 			System.out.println("GET SUCCEEDED.");
 		}
 		else{
