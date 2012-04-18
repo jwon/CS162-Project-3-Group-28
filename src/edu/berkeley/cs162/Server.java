@@ -40,20 +40,20 @@ public class Server {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		System.out.println("******************************");
-		System.out.println("******************************");
+		//System.out.println("******************************");
+		//System.out.println("******************************");
 		System.out.println("Binding Server:");
 		key_server = new KeyServer<String, String>(1000);
-		System.out.println("1");
+		//System.out.println("1");
 		server = new SocketServer("localhost", 8080);
-		System.out.println("2");
+		//System.out.println("2");
 		NetworkHandler handler = new KVClientHandler<String, String>(key_server);
-		System.out.println("3");
+		//System.out.println("3");
 		server.addHandler(handler);
-		System.out.println("4");
+		//System.out.println("4");
 		server.connect();
 		System.out.println("Starting Server");
-		System.out.println("******************************");
+		//System.out.println("******************************");
 		server.run();
 	}
 
