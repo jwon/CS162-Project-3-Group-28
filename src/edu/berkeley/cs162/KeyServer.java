@@ -120,8 +120,12 @@ public class KeyServer<K extends Serializable, V extends Serializable> implement
 			throw new KVException(new KVMessage("resp", keyString, null, false, "Does not exist"));			
 		}
 		
-		dataCache.del(key);
-		dataStore.del(key);
+		synchronized (dataCache) {
+		    dataCache.del(key);
+		}
+		synchronized (dataStore) {
+		    dataStore.del(key);
+		}
 	}
 }
 
