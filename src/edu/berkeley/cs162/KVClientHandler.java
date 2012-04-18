@@ -171,7 +171,7 @@ public class KVClientHandler<K extends Serializable, V extends Serializable> imp
 						
 					}
 				} 
-				System.out.println("******************************");
+				//System.out.println("******************************");
 				
 			} else if (message.getMsgType().equals("putreq")) {
 				 try {
